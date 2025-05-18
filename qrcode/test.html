@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        img {
+            max-width: 300px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Generator Test Page</h1>
+
+    <div class="test-section">
+        <h2>Test QR Code</h2>
+        <iframe src="generate.html?data=Hello%20World" width="400" height="400" frameborder="0"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>Test with Different Content</h2>
+        <p>Try these examples:</p>
+        <ul>
+            <li><a href="generate.html?data=Hello%20World" target="_blank">Simple Text</a></li>
+            <li><a href="generate.html?data=https://daviskartchner.com" target="_blank">Website URL</a></li>
+            <li><a href="generate.html?data=tel:1234567890" target="_blank">Phone Number</a></li>
+            <li><a href="generate.html?data=mailto:example@email.com" target="_blank">Email Address</a></li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Usage</h2>
+        <p>To generate a QR code, use the following URL format:</p>
+        <code>https://daviskartchner.com/qrcode/generate.html?data=YOUR_TEXT_HERE</code>
+        <p>Make sure to URL encode any special characters in your text.</p>
+    </div>
+</body>
+</html> 
