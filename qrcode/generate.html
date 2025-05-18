@@ -282,6 +282,12 @@
             cursor: pointer;
             width: fit-content;
             margin-left: auto;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: manipulation;
+            min-height: 24px;
+            display: flex;
+            align-items: center;
         }
         .theme-toggle {
             display: block;
@@ -295,12 +301,16 @@
             transition: all 0.3s ease;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
             width: fit-content;
             margin-left: auto;
             white-space: nowrap;
+            min-height: 24px;
         }
         .version-container:hover .theme-toggle {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .theme-toggle.show {
             opacity: 1;
             visibility: visible;
         }
@@ -648,7 +658,7 @@
 </head>
 <body>
     <div class="version-container">
-        <div class="version">v1.7.2</div>
+        <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.7.2</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
@@ -1227,6 +1237,28 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        function showThemeToggle(event) {
+            // Prevent double-firing on touch devices
+            if (event.type === 'touchstart') {
+                event.preventDefault();
+            }
+            
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.style.opacity = '1';
+            themeToggle.style.visibility = 'visible';
+            
+            // Clear any existing timeout
+            if (window.themeToggleTimeout) {
+                clearTimeout(window.themeToggleTimeout);
+            }
+            
+            // Hide after 10 seconds
+            window.themeToggleTimeout = setTimeout(() => {
+                themeToggle.style.opacity = '0';
+                themeToggle.style.visibility = 'hidden';
+            }, 10000);
         }
     </script>
 </body>
