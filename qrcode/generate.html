@@ -661,7 +661,7 @@
                 <label for="template">Template</label>
                 <div class="select-wrapper">
                     <select id="template" onchange="handleTemplateChange()">
-                        <option value="custom">Custom Text or URL</option>
+                        <option value="custom">None</option>
                         <option value="url">URL (https://)</option>
                         <option value="wifi">WiFi Network</option>
                         <option value="email">Email Address</option>
@@ -677,8 +677,8 @@
         </div>
 
         <div class="input-group">
-            <label for="data">Text or URL</label>
-            <input type="text" id="data" placeholder="Enter text or URL to encode" 
+            <label for="data">Text</label>
+            <input type="text" id="data" placeholder="Enter text" 
                 onkeyup="validateAndGenerate()" 
                 onpaste="setTimeout(validateAndGenerate, 0)"
                 maxlength="700">
