@@ -476,19 +476,103 @@
         body.dark-theme select {
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
         }
+
+        .advanced-toggle {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .advanced-toggle:hover {
+            opacity: 1;
+        }
+
+        .advanced-toggle::before {
+            content: '▸';
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .advanced-toggle.open::before {
+            transform: rotate(90deg);
+        }
+
+        .advanced-section {
+            display: none;
+            padding: 15px;
+            background-color: var(--version-bg);
+            border-radius: 8px;
+            margin: 10px 0 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .advanced-section.visible {
+            display: block;
+        }
+
+        .advanced-section .input-group {
+            margin-bottom: 15px;
+        }
+
+        .advanced-section .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Add tooltip styles */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tooltip-icon {
+            margin-left: 5px;
+            cursor: help;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .tooltip-icon:hover {
+            opacity: 1;
+        }
+
+        .tooltip-text {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            width: 200px;
+            display: none;
+            z-index: 100;
+        }
+
+        .tooltip-wrapper:hover .tooltip-text {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="version-container">
-        <div class="version">v1.5.14</div>
+        <div class="version">v1.6.0</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
         <h1>QR Code Generator</h1>
-        
-        <div class="usage">
-            Direct URL usage: ?data=Hello%20World&size=400&type=png
-        </div>
 
         <div class="error" id="errorMsg"></div>
 
@@ -525,6 +609,46 @@
                         <option value="png" selected>PNG</option>
                         <option value="jpg">JPG</option>
                         <option value="svg">SVG</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="advanced-toggle" onclick="toggleAdvanced(this)">Advanced Options</button>
+        
+        <div class="advanced-section" id="advancedSection">
+            <div class="input-group">
+                <div class="tooltip-wrapper">
+                    <label for="errorCorrection">Error Correction:</label>
+                    <span class="tooltip-icon">ⓘ</span>
+                    <div class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</div>
+                </div>
+                <div class="select-wrapper">
+                    <select id="errorCorrection" onchange="generateQR()">
+                        <option value="L">Low (7%)</option>
+                        <option value="M">Medium (15%)</option>
+                        <option value="Q">Quartile (25%)</option>
+                        <option value="H">High (30%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="tooltip-wrapper">
+                    <label for="quietZone">Quiet Zone (margin):</label>
+                    <span class="tooltip-icon">ⓘ</span>
+                    <div class="tooltip-text">White space around the QR code. Minimum of 4 modules recommended for reliable scanning.</div>
+                </div>
+                <div class="select-wrapper">
+                    <select id="quietZone" onchange="generateQR()">
+                        <option value="0">None</option>
+                        <option value="1">1 module</option>
+                        <option value="2">2 modules</option>
+                        <option value="3">3 modules</option>
+                        <option value="4" selected>4 modules (recommended)</option>
+                        <option value="6">6 modules</option>
+                        <option value="8">8 modules</option>
+                        <option value="10">10 modules</option>
                     </select>
                 </div>
             </div>
@@ -638,6 +762,11 @@
             return size >= 200 && size <= 2000;
         }
 
+        function toggleAdvanced(button) {
+            button.classList.toggle('open');
+            document.getElementById('advancedSection').classList.toggle('visible');
+        }
+
         function generateQR(directMode = false) {
             let data, size, format;
             
@@ -672,14 +801,17 @@
             }
 
             try {
+                const errorCorrectionLevel = directMode ? 'L' : document.getElementById('errorCorrection').value;
+                const quietZone = directMode ? 4 : parseInt(document.getElementById('quietZone').value);
+
                 const options = {
                     text: data,
                     width: size,
                     height: size,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.L,
-                    margin: directMode ? 0 : 4
+                    correctLevel: QRCode.CorrectLevel[errorCorrectionLevel],
+                    margin: quietZone
                 };
 
                 // Create a container for the QR code
