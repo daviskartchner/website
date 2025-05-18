@@ -161,6 +161,7 @@
             display: inline-block;
             min-width: 200px;
             max-width: 100%;
+            z-index: 1;
         }
         #qrcode-container {
             background-color: white;
@@ -519,16 +520,20 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 2px 0;
+            padding: 8px;
             font-size: 14px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
-            margin-bottom: 5px;
+            gap: 8px;
+            margin: 0;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             -webkit-appearance: none;
             -moz-appearance: none;
+            height: 36px;
+            width: fit-content;
+            position: relative;
+            margin-bottom: 5px;
         }
 
         .advanced-toggle:hover,
@@ -539,6 +544,27 @@
             color: var(--text-color);
             -webkit-appearance: none;
             -moz-appearance: none;
+            transform: none;
+        }
+
+        .advanced-toggle::before {
+            content: '▸';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            line-height: 1;
+            text-align: center;
+            transform-origin: center;
+            position: relative;
+            top: -1px;
+        }
+
+        .advanced-toggle.open::before {
+            transform: rotate(90deg);
         }
 
         .tooltip-wrapper {
@@ -546,6 +572,7 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            z-index: 2;
         }
 
         .tooltip-icon {
@@ -560,6 +587,7 @@
             font-size: 16px;
             position: relative;
             top: -1px;
+            z-index: 2;
         }
 
         .tooltip-icon:hover {
@@ -580,7 +608,7 @@
             box-shadow: 0 2px 8px var(--shadow-color);
             border: 1px solid var(--border-color);
             width: 200px;
-            z-index: 100;
+            z-index: 3;
             opacity: 0;
             transition: opacity 0.2s ease, visibility 0.2s ease;
             pointer-events: none;
@@ -589,16 +617,6 @@
         .tooltip-icon:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
-        }
-
-        .advanced-toggle::before {
-            content: '▸';
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        .advanced-toggle.open::before {
-            transform: rotate(90deg);
         }
 
         .advanced-section {
