@@ -40,6 +40,8 @@
             --version-bg: #f8f9fa;
             --version-color: #95a5a6;
             --label-color: #2c3e50;
+            --caret-color: #333333;
+            --invalid-color: #e74c3c;
         }
 
         /* Dark theme variables */
@@ -59,6 +61,9 @@
             --version-bg: #363636;
             --version-color: #95a5a6;
             --label-color: #e0e0e0;
+            --caret-color: #e0e0e0;
+            --invalid-color: #c0392b;
+            --caret-bg: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e0e0e0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
         }
 
         body {
@@ -95,46 +100,61 @@
             font-weight: 600;
             color: var(--label-color);
         }
-        input[type="text"], input[type="number"], select {
+        input[type="text"], input[type="number"], input[type="email"], input[type="tel"], select {
             width: 100%;
             max-width: 600px;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             margin-bottom: 10px;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
             box-sizing: border-box;
             background-color: var(--input-bg);
             color: var(--text-color);
-            border-color: var(--border-color);
         }
-        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        input[type="text"]:focus, 
+        input[type="number"]:focus, 
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
             outline: none;
             border-color: var(--button-bg);
+            box-shadow: 0 0 0 1px var(--button-bg);
+        }
+        input[type="email"]:invalid,
+        input[type="tel"]:invalid {
+            border-color: var(--invalid-color);
+        }
+        input[type="email"]:valid,
+        input[type="tel"]:valid {
+            border-color: var(--border-color);
         }
         .controls {
             display: flex;
             gap: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 4px;
             justify-content: flex-start;
             flex-wrap: wrap;
         }
         select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             margin-bottom: 10px;
             transition: border-color 0.3s ease;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-image: var(--caret-bg, url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"));
             background-repeat: no-repeat;
             background-position: right 0.7rem top 50%;
             background-size: 0.65rem auto;
             padding-right: 2rem;
             box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
         }
         .select-wrapper {
             position: relative;
@@ -168,7 +188,7 @@
             gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
-            margin: 25px 0;
+            margin-top: 10px;
         }
         button {
             padding: 12px 25px;
@@ -192,13 +212,20 @@
             transform: none;
         }
         .error {
-            color: #e74c3c;
+            color: var(--error-color);
             padding: 15px;
             border-radius: 8px;
             background-color: var(--error-bg);
             margin-bottom: 20px;
             display: none;
-            border: 1px solid #fadbd8;
+            border: 1px solid var(--error-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error.visible {
+            display: block;
+            opacity: 1;
         }
         #gui, #direct {
             display: none;
@@ -482,17 +509,75 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 8px 0;
+            padding: 2px 0;
             font-size: 14px;
             display: flex;
             align-items: center;
             gap: 5px;
-            margin-top: 10px;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
+            margin-bottom: 5px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
 
-        .advanced-toggle:hover {
+        .advanced-toggle:hover,
+        .advanced-toggle:focus,
+        .advanced-toggle:active {
+            outline: none;
+            background: none;
+            color: var(--text-color);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tooltip-icon {
+            margin-left: 5px;
+            cursor: help;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+            font-size: 16px;
+            position: relative;
+            top: -1px;
+        }
+
+        .tooltip-icon:hover {
+            opacity: 1;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            width: 200px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            pointer-events: none;
+        }
+
+        .tooltip-icon:hover .tooltip-text {
+            visibility: visible;
             opacity: 1;
         }
 
@@ -511,7 +596,7 @@
             padding: 15px;
             background-color: var(--version-bg);
             border-radius: 8px;
-            margin: 10px 0 25px;
+            margin-bottom: 25px;
             border: 1px solid var(--border-color);
         }
 
@@ -520,55 +605,50 @@
         }
 
         .advanced-section .input-group {
-            margin-bottom: 15px;
+            margin: 0;
         }
 
-        .advanced-section .input-group:last-child {
-            margin-bottom: 0;
+        .advanced-section .select-wrapper {
+            margin: 8px 0 0 0;
+            width: 100%;
+            max-width: 600px;
         }
 
-        /* Add tooltip styles */
-        .tooltip-wrapper {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
+        .template-section {
+            width: 100%;
+            margin-bottom: 20px;
         }
 
-        .tooltip-icon {
-            margin-left: 5px;
-            cursor: help;
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
-        }
-
-        .tooltip-icon:hover {
-            opacity: 1;
-        }
-
-        .tooltip-text {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--container-bg);
-            color: var(--text-color);
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            box-shadow: 0 2px 8px var(--shadow-color);
-            border: 1px solid var(--border-color);
-            width: 200px;
+        .template-fields {
             display: none;
-            z-index: 100;
+            margin-top: 15px;
+            gap: 15px;
         }
 
-        .tooltip-wrapper:hover .tooltip-text {
-            display: block;
+        .template-fields.visible {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .template-field {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .template-field input {
+            width: 100%;
+        }
+
+        .template-field input:focus {
+            border-color: var(--button-bg);
+            box-shadow: 0 0 0 1px var(--button-bg);
         }
     </style>
 </head>
 <body>
     <div class="version-container">
-        <div class="version">v1.6.0</div>
+        <div class="version">v1.7.2</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
@@ -576,34 +656,55 @@
 
         <div class="error" id="errorMsg"></div>
 
+        <div class="template-section">
+            <div class="input-group">
+                <label for="template">Template</label>
+                <div class="select-wrapper">
+                    <select id="template" onchange="handleTemplateChange()">
+                        <option value="custom">Custom Text or URL</option>
+                        <option value="url">URL (https://)</option>
+                        <option value="wifi">WiFi Network</option>
+                        <option value="email">Email Address</option>
+                        <option value="tel">Phone Number</option>
+                        <option value="sms">SMS</option>
+                        <option value="vcard">Contact Card</option>
+                    </select>
+                </div>
+            </div>
+            <div id="templateFields" class="template-fields">
+                <!-- Fields will be dynamically populated -->
+            </div>
+        </div>
+
         <div class="input-group">
-            <label for="data">Text or URL:</label>
+            <label for="data">Text or URL</label>
             <input type="text" id="data" placeholder="Enter text or URL to encode" 
-                onkeyup="generateQR()" 
-                onpaste="setTimeout(generateQR, 0)">
+                onkeyup="validateAndGenerate()" 
+                onpaste="setTimeout(validateAndGenerate, 0)"
+                maxlength="700">
         </div>
 
         <div class="controls">
             <div class="input-group">
-                <label for="size">Size (px):</label>
+                <label for="size">Size</label>
                 <div class="select-wrapper">
                     <select id="size" onchange="generateQR()">
-                        <option value="200">200 x 200</option>
-                        <option value="300">300 x 300</option>
-                        <option value="400" selected>400 x 400</option>
-                        <option value="500">500 x 500</option>
-                        <option value="600">600 x 600</option>
-                        <option value="800">800 x 800</option>
-                        <option value="1000">1000 x 1000</option>
-                        <option value="1200">1200 x 1200</option>
-                        <option value="1500">1500 x 1500</option>
-                        <option value="2000">2000 x 2000</option>
+                        <option value="200">200 × 200</option>
+                        <option value="300">300 × 300</option>
+                        <option value="400" selected>400 × 400</option>
+                        <option value="500">500 × 500</option>
+                        <option value="600">600 × 600</option>
+                        <option value="800">800 × 800</option>
+                        <option value="1000">1000 × 1000</option>
+                        <option value="1200">1200 × 1200</option>
+                        <option value="1500">1500 × 1500</option>
+                        <option value="2000">2000 × 2000</option>
                     </select>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="format">Format:</label>
+                <label for="format">Format</label>
                 <div class="select-wrapper">
                     <select id="format" onchange="generateQR()">
                         <option value="png" selected>PNG</option>
@@ -619,9 +720,10 @@
         <div class="advanced-section" id="advancedSection">
             <div class="input-group">
                 <div class="tooltip-wrapper">
-                    <label for="errorCorrection">Error Correction:</label>
-                    <span class="tooltip-icon">ⓘ</span>
-                    <div class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</div>
+                    <label for="errorCorrection">Error Correction</label>
+                    <span class="tooltip-icon">ⓘ
+                        <span class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</span>
+                    </span>
                 </div>
                 <div class="select-wrapper">
                     <select id="errorCorrection" onchange="generateQR()">
@@ -629,26 +731,6 @@
                         <option value="M">Medium (15%)</option>
                         <option value="Q">Quartile (25%)</option>
                         <option value="H">High (30%)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <div class="tooltip-wrapper">
-                    <label for="quietZone">Quiet Zone (margin):</label>
-                    <span class="tooltip-icon">ⓘ</span>
-                    <div class="tooltip-text">White space around the QR code. Minimum of 4 modules recommended for reliable scanning.</div>
-                </div>
-                <div class="select-wrapper">
-                    <select id="quietZone" onchange="generateQR()">
-                        <option value="0">None</option>
-                        <option value="1">1 module</option>
-                        <option value="2">2 modules</option>
-                        <option value="3">3 modules</option>
-                        <option value="4" selected>4 modules (recommended)</option>
-                        <option value="6">6 modules</option>
-                        <option value="8">8 modules</option>
-                        <option value="10">10 modules</option>
                     </select>
                 </div>
             </div>
@@ -668,6 +750,239 @@
     <script>
         let currentQR = null;
         let currentTheme = null;
+        let currentTemplate = 'custom';
+
+        // Validation functions
+        function validateEmail(email) {
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhone(phone) {
+            return phone.replace(/\D/g, '').length === 10;
+        }
+
+        function formatPhoneNumber(value) {
+            if (!value) return value;
+            const phoneNumber = value.replace(/\D/g, '');
+            const phoneNumberLength = phoneNumber.length;
+            
+            // Always show the opening parenthesis
+            if (phoneNumberLength <= 3) {
+                return `(${phoneNumber}`;
+            }
+            if (phoneNumberLength <= 6) {
+                return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+            }
+            return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+        }
+
+        function handlePhoneInput(event) {
+            const input = event.target;
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            input.value = formatPhoneNumber(value);
+            validateAndGenerateTemplate();
+        }
+
+        function validateAndGenerateTemplate() {
+            const template = templates[currentTemplate];
+            if (!template) return;
+
+            let isValid = true;
+            const data = {};
+
+            template.fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const value = input.value;
+                
+                // Remove any previous error styling
+                input.style.borderColor = '';
+                
+                if (field.id === 'email' && value) {
+                    if (!validateEmail(value)) {
+                        input.style.borderColor = 'var(--error-color)';
+                        isValid = false;
+                    }
+                }
+                
+                if (field.id === 'phone' && value) {
+                    const phoneDigits = value.replace(/\D/g, '');
+                    if (!validatePhone(phoneDigits)) {
+                        input.style.borderColor = 'var(--error-color)';
+                        isValid = false;
+                    }
+                }
+                
+                data[field.id] = value;
+            });
+
+            if (isValid) {
+                const formattedData = template.format(data);
+                document.getElementById('data').value = formattedData;
+                generateQR();
+            }
+        }
+
+        const templates = {
+            custom: {
+                fields: [],
+                format: (data) => data
+            },
+            url: {
+                fields: [
+                    { id: 'url', label: 'URL', placeholder: 'example.com' }
+                ],
+                format: (data) => data.url.startsWith('http') ? data.url : `https://${data.url}`
+            },
+            wifi: {
+                fields: [
+                    { id: 'ssid', label: 'Network Name', placeholder: 'WiFi Network Name' },
+                    { id: 'password', label: 'Password', placeholder: 'WiFi Password' },
+                    { id: 'encryption', label: 'Encryption', type: 'select', options: [
+                        { value: 'WPA', label: 'WPA/WPA2' },
+                        { value: 'WEP', label: 'WEP' },
+                        { value: 'nopass', label: 'None' }
+                    ]}
+                ],
+                format: (data) => `WIFI:T:${data.encryption};S:${data.ssid};P:${data.password};;`
+            },
+            email: {
+                fields: [
+                    { id: 'email', label: 'Email Address', placeholder: 'example@email.com' },
+                    { id: 'subject', label: 'Subject (Optional)', placeholder: 'Email Subject' }
+                ],
+                format: (data) => {
+                    let mailto = `mailto:${data.email}`;
+                    if (data.subject) mailto += `?subject=${encodeURIComponent(data.subject)}`;
+                    return mailto;
+                }
+            },
+            tel: {
+                fields: [
+                    { id: 'phone', label: 'Phone Number', placeholder: '+1234567890' }
+                ],
+                format: (data) => `tel:${data.phone}`
+            },
+            sms: {
+                fields: [
+                    { id: 'phone', label: 'Phone Number', placeholder: '+1234567890' },
+                    { id: 'message', label: 'Message (Optional)', placeholder: 'SMS Message' }
+                ],
+                format: (data) => {
+                    let sms = `sms:${data.phone}`;
+                    if (data.message) sms += `?body=${encodeURIComponent(data.message)}`;
+                    return sms;
+                }
+            },
+            vcard: {
+                fields: [
+                    { id: 'name', label: 'Full Name', placeholder: 'John Doe' },
+                    { id: 'email', label: 'Email', placeholder: 'john@example.com' },
+                    { id: 'phone', label: 'Phone', placeholder: '+1234567890' },
+                    { id: 'company', label: 'Company (Optional)', placeholder: 'Company Name' },
+                    { id: 'title', label: 'Title (Optional)', placeholder: 'Job Title' }
+                ],
+                format: (data) => {
+                    const vcard = [
+                        'BEGIN:VCARD',
+                        'VERSION:3.0',
+                        `FN:${data.name}`,
+                        `EMAIL:${data.email}`,
+                        `TEL:${data.phone}`
+                    ];
+                    if (data.company) vcard.push(`ORG:${data.company}`);
+                    if (data.title) vcard.push(`TITLE:${data.title}`);
+                    vcard.push('END:VCARD');
+                    return vcard.join('\n');
+                }
+            },
+        };
+
+        function handleTemplateChange() {
+            const templateSelect = document.getElementById('template');
+            const fieldsContainer = document.getElementById('templateFields');
+            const dataInput = document.getElementById('data');
+            const qrcodeEl = document.getElementById('qrcode');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            // Clear previous QR code and data
+            qrcodeEl.innerHTML = '';
+            qrcodeEl.style.display = 'none';
+            dataInput.value = '';
+            saveBtn.disabled = true;
+            
+            currentTemplate = templateSelect.value;
+            const template = templates[currentTemplate];
+
+            // Clear and hide the main input if using a template
+            if (currentTemplate !== 'custom') {
+                dataInput.parentElement.style.display = 'none';
+            } else {
+                dataInput.parentElement.style.display = 'block';
+                fieldsContainer.classList.remove('visible');
+                return;
+            }
+
+            // Show template fields
+            fieldsContainer.innerHTML = '';
+            template.fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'template-field';
+                
+                const label = document.createElement('label');
+                label.htmlFor = field.id;
+                label.textContent = field.label;
+                fieldDiv.appendChild(label);
+
+                let input;
+                if (field.type === 'select') {
+                    input = document.createElement('select');
+                    field.options.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.textContent = option.label;
+                        input.appendChild(opt);
+                    });
+                } else if (field.type === 'textarea') {
+                    input = document.createElement('textarea');
+                } else {
+                    input = document.createElement('input');
+                    input.type = field.type || 'text';
+                }
+                
+                input.id = field.id;
+                input.placeholder = field.placeholder || '';
+                input.value = ''; // Ensure the field starts empty
+                
+                // Add specific validation and formatting for email and phone fields
+                if (field.id === 'email') {
+                    input.type = 'email';
+                    input.pattern = '[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}';
+                    input.title = 'Please enter a valid email address';
+                    input.oninput = validateAndGenerateTemplate;
+                } else if (field.id === 'phone') {
+                    input.type = 'tel';
+                    input.placeholder = '(123) 456-7890';
+                    input.maxLength = 14; // (XXX) XXX-XXXX
+                    input.oninput = handlePhoneInput;
+                } else {
+                    input.oninput = validateAndGenerateTemplate;
+                }
+                
+                fieldDiv.appendChild(input);
+                fieldsContainer.appendChild(fieldDiv);
+            });
+
+            fieldsContainer.classList.add('visible');
+        }
+
+        function generateFromTemplate() {
+            validateAndGenerateTemplate();
+        }
+
+        // Initialize template handling
+        handleTemplateChange();
 
         // Initialize theme
         function initializeTheme() {
@@ -752,9 +1067,9 @@
         function showError(message) {
             const errorEl = document.getElementById('errorMsg');
             errorEl.textContent = message;
-            errorEl.style.display = 'block';
+            errorEl.classList.add('visible');
             setTimeout(() => {
-                errorEl.style.display = 'none';
+                errorEl.classList.remove('visible');
             }, 5000);
         }
 
@@ -765,6 +1080,15 @@
         function toggleAdvanced(button) {
             button.classList.toggle('open');
             document.getElementById('advancedSection').classList.toggle('visible');
+        }
+
+        function validateAndGenerate() {
+            const input = document.getElementById('data').value;
+            if (input.length > 700) {
+                showError('Text length cannot exceed 700 characters');
+                return;
+            }
+            generateQR();
         }
 
         function generateQR(directMode = false) {
@@ -802,7 +1126,6 @@
 
             try {
                 const errorCorrectionLevel = directMode ? 'L' : document.getElementById('errorCorrection').value;
-                const quietZone = directMode ? 4 : parseInt(document.getElementById('quietZone').value);
 
                 const options = {
                     text: data,
@@ -811,7 +1134,6 @@
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel[errorCorrectionLevel],
-                    margin: quietZone
                 };
 
                 // Create a container for the QR code
