@@ -375,61 +375,89 @@
             margin: 0;
         }
 
-        .tooltip-wrapper {
+        .advanced-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
             position: relative;
-            display: inline-flex;
+            gap: 16px;
+            padding: 0;
+            box-shadow: none;
+            --underline-position: 0;
+            --underline-width: 90px;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Roboto', sans-serif;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.0892857143em;
+            font-weight: 500;
+            width: auto;
+            box-shadow: none;
+            text-align: center;
+        }
+
+        .advanced-tabs::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: var(--underline-position);
+            height: 2px;
+            background-color: rgb(79, 79, 79);
+            width: var(--underline-width);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-button:hover {
+            color: var(--text-color);
+            background: none;
+        }
+
+        .tab-button.active {
+            color: rgb(79, 79, 79);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 8px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .color-input-wrapper {
+            display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 2;
         }
 
-        .tooltip-icon {
-            margin-left: 4px;
-            cursor: help;
-            color: var(--text-secondary);
-            opacity: 0.7;
-            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            line-height: 1;
-            font-size: 16px;
-            position: relative;
-            z-index: 2;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            justify-content: center;
-            background-color: var(--hover-overlay);
-        }
-
-        .tooltip-icon:hover {
-            opacity: 1;
-            background-color: var(--focus-overlay);
-        }
-
-        .tooltip-text {
-            visibility: hidden;
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--container-bg);
-            color: var(--text-color);
-            padding: 8px 16px;
+        .color-preview {
+            width: 24px;
+            height: 24px;
             border-radius: 4px;
-            font-size: 0.875rem;
-            box-shadow: var(--surface-2);
-            width: 200px;
-            z-index: 3;
-            opacity: 0;
-            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                      visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
+            border: 1px solid var(--border-color);
         }
 
-        .tooltip-icon:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
+        input[type="color"] {
+            width: 0;
+            height: 0;
+            padding: 0;
+            border: none;
+            visibility: hidden;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            max-width: 200px;
         }
 
         .version-container {
@@ -537,6 +565,41 @@
                 line-height: 2rem;
             }
         }
+
+        .color-button {
+            padding: 4px 12px;
+            font-size: 0.875rem;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .color-button:hover {
+            background: var(--hover-overlay);
+        }
+
+        .range-value {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-left: 8px;
+            min-width: 32px;
+            text-align: right;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .tooltip-wrapper {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -611,20 +674,81 @@
         <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
         
         <div class="advanced-section" id="advancedSection">
-            <div class="input-group">
-                <div class="tooltip-wrapper">
-                    <label for="errorCorrection">Error Correction</label>
-                    <span class="tooltip-icon">ⓘ
-                        <span class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</span>
-                    </span>
+            <div class="advanced-tabs">
+                <button class="tab-button active" onclick="showTab('style')">Style</button>
+                <button class="tab-button" onclick="showTab('output')">Output</button>
+                <button class="tab-button" onclick="showTab('technical')">Technical</button>
+            </div>
+            <div class="tab-content active" id="styleTab">
+                <div class="input-group">
+                    <label for="colorDark">QR Code Color</label>
+                    <div class="color-input-wrapper">
+                        <div class="color-preview" id="darkPreview"></div>
+                        <input type="color" id="colorDark" value="#000000" onchange="updateColorPreview('dark'); generateQR()">
+                        <button class="color-button" onclick="document.getElementById('colorDark').click()">Choose Color</button>
+                    </div>
                 </div>
-                <div class="select-wrapper">
-                    <select id="errorCorrection" onchange="generateQR()">
-                        <option value="L">Low (7%)</option>
-                        <option value="M">Medium (15%)</option>
-                        <option value="Q">Quartile (25%)</option>
-                        <option value="H">High (30%)</option>
-                    </select>
+                <div class="input-group">
+                    <label for="colorLight">Background Color</label>
+                    <div class="color-input-wrapper">
+                        <div class="color-preview" id="lightPreview"></div>
+                        <input type="color" id="colorLight" value="#ffffff" onchange="updateColorPreview('light'); generateQR()">
+                        <button class="color-button" onclick="document.getElementById('colorLight').click()">Choose Color</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="cornerRadius">Corner Radius</label>
+                    <input type="range" id="cornerRadius" min="0" max="50" value="0" onchange="generateQR()" oninput="updateRangeValue('cornerRadius')">
+                    <span class="range-value" id="cornerRadiusValue">0</span>
+                </div>
+                <div class="input-group">
+                    <label for="padding">Padding</label>
+                    <input type="range" id="padding" min="0" max="50" value="15" onchange="generateQR()" oninput="updateRangeValue('padding')">
+                    <span class="range-value" id="paddingValue">15</span>
+                </div>
+            </div>
+            <div class="tab-content" id="outputTab">
+                <div class="input-group">
+                    <label for="outputQuality">Output Quality</label>
+                    <input type="range" id="outputQuality" min="1" max="100" value="90" onchange="generateQR()" oninput="updateRangeValue('outputQuality')">
+                    <span class="range-value" id="outputQualityValue">90</span>
+                </div>
+                <div class="input-group">
+                    <div class="tooltip-wrapper">
+                        <label for="filenamePattern">Filename Pattern</label>
+                        <span class="tooltip-icon">ⓘ
+                            <span class="tooltip-text">Custom pattern for saved files. Use {date}, {time}, and {text} as placeholders.</span>
+                        </span>
+                    </div>
+                    <input type="text" id="filenamePattern" value="qrcode-{text}" placeholder="e.g., qr-{date}-{text}">
+                </div>
+            </div>
+            <div class="tab-content" id="technicalTab">
+                <div class="input-group">
+                    <div class="tooltip-wrapper">
+                        <label for="errorCorrection">Error Correction</label>
+                        <span class="tooltip-icon">ⓘ
+                            <span class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</span>
+                        </span>
+                    </div>
+                    <div class="select-wrapper">
+                        <select id="errorCorrection" onchange="generateQR()">
+                            <option value="L">Low (7%)</option>
+                            <option value="M">Medium (15%)</option>
+                            <option value="Q">Quartile (25%)</option>
+                            <option value="H">High (30%)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="encoding">Character Encoding</label>
+                    <div class="select-wrapper">
+                        <select id="encoding" onchange="generateQR()">
+                            <option value="UTF-8" selected>UTF-8 (Universal)</option>
+                            <option value="ISO-8859-1">ISO-8859-1 (Latin-1)</option>
+                            <option value="Shift_JIS">Shift_JIS (Japanese)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -972,7 +1096,15 @@
 
         function toggleAdvanced(button) {
             button.classList.toggle('open');
-            document.getElementById('advancedSection').classList.toggle('visible');
+            const section = document.getElementById('advancedSection');
+            section.classList.toggle('visible');
+            
+            // Ensure proper animation timing
+            if (section.classList.contains('visible')) {
+                section.style.display = 'block';
+                // Force a reflow
+                section.offsetHeight;
+            }
         }
 
         function validateAndGenerate() {
@@ -1019,19 +1151,26 @@
 
             try {
                 const errorCorrectionLevel = directMode ? 'L' : document.getElementById('errorCorrection').value;
+                const padding = parseInt(document.getElementById('padding').value);
+                const cornerRadius = parseInt(document.getElementById('cornerRadius').value);
+                const outputQuality = parseInt(document.getElementById('outputQuality').value);
 
                 const options = {
                     text: data,
                     width: size,
                     height: size,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
+                    colorDark: document.getElementById('colorDark').value,
+                    colorLight: document.getElementById('colorLight').value,
                     correctLevel: QRCode.CorrectLevel[errorCorrectionLevel],
+                    margin: padding,
+                    quality: outputQuality / 100,
+                    cornerRadius: cornerRadius,
                 };
 
                 // Create a container for the QR code
                 const qrContainer = document.createElement('div');
                 qrContainer.id = 'qrcode-container';
+                qrContainer.style.padding = padding + 'px';
                 qrcodeEl.appendChild(qrContainer);
 
                 // Generate QR code
@@ -1050,9 +1189,7 @@
                                     format: 'svg'
                                 };
                             } else {
-                                // Add margin to SVG for GUI mode
-                                const existingSvg = svg.outerHTML;
-                                const wrappedSvg = `<div style="background:white;padding:15px;display:inline-block;">${existingSvg}</div>`;
+                                const wrappedSvg = `<div style="background:${options.colorLight};padding:${padding}px;display:inline-block;">${svg.outerHTML}</div>`;
                                 const tempDiv = document.createElement('div');
                                 tempDiv.innerHTML = wrappedSvg;
                                 
@@ -1072,26 +1209,22 @@
                         if (canvas) {
                             if (directMode) {
                                 currentQR = {
-                                    data: canvas.toDataURL(`image/${format}`),
+                                    data: canvas.toDataURL(`image/${format}`, options.quality),
                                     format: format
                                 };
                             } else {
-                                // Create a new canvas with margin for GUI mode
                                 const newCanvas = document.createElement('canvas');
-                                const margin = 15;
+                                const margin = padding;
                                 newCanvas.width = canvas.width + (margin * 2);
                                 newCanvas.height = canvas.height + (margin * 2);
                                 const ctx = newCanvas.getContext('2d');
                                 
-                                // Fill with white background
-                                ctx.fillStyle = '#FFFFFF';
+                                ctx.fillStyle = options.colorLight;
                                 ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-                                
-                                // Draw original QR code
                                 ctx.drawImage(canvas, margin, margin);
                                 
                                 currentQR = {
-                                    data: newCanvas.toDataURL(`image/${format}`),
+                                    data: newCanvas.toDataURL(`image/${format}`, options.quality),
                                     format: format
                                 };
                                 saveBtn.disabled = false;
@@ -1112,7 +1245,14 @@
 
             const format = document.getElementById('format').value;
             const data = document.getElementById('data').value.trim();
-            const filename = `qrcode-${data.substring(0, 30)}.${currentQR.format}`;
+            const pattern = document.getElementById('filenamePattern').value;
+            
+            let filename = pattern
+                .replace('{text}', data.substring(0, 30))
+                .replace('{date}', new Date().toISOString().split('T')[0])
+                .replace('{time}', new Date().toTimeString().split(' ')[0].replace(/:/g, '-'));
+                
+            filename = `${filename}.${currentQR.format}`;
 
             const link = document.createElement('a');
             link.href = currentQR.data;
@@ -1143,6 +1283,50 @@
                 themeToggle.style.visibility = 'hidden';
             }, 10000);
         }
+
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            const tabsContainer = document.querySelector('.advanced-tabs');
+            
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if(tab.textContent.toLowerCase().includes(tabName)) {
+                    tab.classList.add('active');
+                    // Calculate the exact position for the underline
+                    const rect = tab.getBoundingClientRect();
+                    const containerRect = tabsContainer.getBoundingClientRect();
+                    const position = rect.left - containerRect.left;
+                    tabsContainer.style.setProperty('--underline-position', `${position}px`);
+                    tabsContainer.style.setProperty('--underline-width', `${rect.width}px`);
+                }
+            });
+            
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            tabsContainer.setAttribute('data-active', tabName);
+        }
+
+        function updateColorPreview(type) {
+            const color = document.getElementById('color' + type.charAt(0).toUpperCase() + type.slice(1)).value;
+            document.getElementById(type + 'Preview').style.backgroundColor = color;
+        }
+
+        function updateRangeValue(id) {
+            document.getElementById(id + 'Value').textContent = document.getElementById(id).value;
+        }
+
+        // Initialize color previews
+        updateColorPreview('dark');
+        updateColorPreview('light');
+
+        // Initialize range values
+        updateRangeValue('cornerRadius');
+        updateRangeValue('padding');
+        updateRangeValue('outputQuality');
     </script>
 </body>
 </html> 
