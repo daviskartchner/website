@@ -4,9 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
+    <script>
+        // Early theme initialization to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            let theme;
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.className = theme + '-theme';
+        })();
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
-        :root {
+        /* Light theme variables */
+        :root,
+        :root[data-theme='light'] {
             --bg-color: #f5f5f5;
             --container-bg: #ffffff;
             --text-color: #333333;
@@ -21,28 +39,11 @@
             --error-color: #e74c3c;
             --version-bg: #f8f9fa;
             --version-color: #95a5a6;
+            --label-color: #2c3e50;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root:not([data-theme='light']) {
-                --bg-color: #1a1a1a;
-                --container-bg: #2d2d2d;
-                --text-color: #e0e0e0;
-                --border-color: #404040;
-                --input-bg: #363636;
-                --shadow-color: rgba(0,0,0,0.3);
-                --button-bg: #2980b9;
-                --button-hover: #3498db;
-                --save-button-bg: #27ae60;
-                --save-button-hover: #2ecc71;
-                --error-bg: #482c2c;
-                --error-color: #e74c3c;
-                --version-bg: #363636;
-                --version-color: #95a5a6;
-            }
-        }
-
-        [data-theme='dark'] {
+        /* Dark theme variables */
+        :root[data-theme='dark'] {
             --bg-color: #1a1a1a;
             --container-bg: #2d2d2d;
             --text-color: #e0e0e0;
@@ -57,6 +58,7 @@
             --error-color: #e74c3c;
             --version-bg: #363636;
             --version-color: #95a5a6;
+            --label-color: #e0e0e0;
         }
 
         body {
@@ -79,7 +81,7 @@
         }
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: var(--label-color);
             margin-bottom: 30px;
             font-size: 2.2em;
         }
@@ -91,7 +93,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--label-color);
         }
         input[type="text"], input[type="number"], select {
             width: 100%;
@@ -142,7 +144,7 @@
         }
         #qrcode-container {
             background-color: white;
-            padding: 30px;
+            padding: 15px;
             border-radius: 8px;
             display: inline-block;
             margin: 0 auto;
@@ -150,7 +152,7 @@
         #qrcode, #directQrcode {
             text-align: center;
             margin: 30px auto;
-            padding: 30px;
+            padding: 15px;
             background-color: white;
             border-radius: 8px;
             border: 2px solid #e0e0e0;
@@ -232,42 +234,62 @@
             display: block;
             margin: 0 auto;
         }
-        .version {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: #95a5a6;
-            font-family: monospace;
-            background-color: #f8f9fa;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #e0e0e0;
-            cursor: pointer;
-        }
         .version-container {
             position: absolute;
             top: 10px;
             right: 10px;
             text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+        }
+        .version {
+            font-size: 12px;
+            color: var(--version-color);
+            font-family: monospace;
+            background-color: var(--version-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            width: fit-content;
+            margin-left: auto;
         }
         .theme-toggle {
-            display: none;
+            display: block;
             font-size: 12px;
-            margin-top: 5px;
-            color: #95a5a6;
-            background: none;
-            border: none;
+            color: var(--text-color);
+            background-color: var(--version-bg);
+            border: 1px solid var(--border-color);
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 4px;
             transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            width: fit-content;
+            margin-left: auto;
+            white-space: nowrap;
         }
         .version-container:hover .theme-toggle {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
         .theme-toggle:hover {
-            background-color: #f8f9fa;
+            background-color: var(--button-bg);
+            color: white;
+        }
+        /* Add hover area */
+        .version-container::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            bottom: -10px;
+            left: -10px;
+            z-index: -1;
         }
         @media (max-width: 600px) {
             body {
@@ -415,36 +437,40 @@
 
         /* Dark theme classes for manual toggle */
         body.dark-theme {
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
         body.dark-theme .container {
-            background-color: #2d2d2d;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            background-color: var(--container-bg);
+            box-shadow: 0 2px 15px var(--shadow-color);
         }
 
         body.dark-theme input[type="text"],
+        body.dark-theme input[type="number"],
         body.dark-theme select {
-            background-color: #3d3d3d;
-            border-color: #4d4d4d;
-            color: #ffffff;
+            background-color: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--text-color);
         }
 
         body.dark-theme .usage,
         body.dark-theme .regenerate-controls {
-            background-color: #3d3d3d;
-            border-color: #4d4d4d;
+            background-color: var(--version-bg);
+            border-color: var(--border-color);
+            color: var(--text-color);
         }
 
-        body.dark-theme .version {
-            background-color: #3d3d3d;
-            border-color: #4d4d4d;
-            color: #95a5a6;
+        body.dark-theme .version,
+        body.dark-theme .theme-toggle {
+            background-color: var(--version-bg);
+            border-color: var(--border-color);
+            color: var(--version-color);
         }
 
-        body.dark-theme .theme-toggle:hover {
-            background-color: #3d3d3d;
+        body.dark-theme h1,
+        body.dark-theme label {
+            color: var(--label-color);
         }
 
         body.dark-theme select {
@@ -452,10 +478,10 @@
         }
     </style>
 </head>
-<body class="system-theme">
+<body>
     <div class="version-container">
-        <div class="version">v1.5.6</div>
-        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+        <div class="version">v1.5.14</div>
+        <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
         <h1>QR Code Generator</h1>
@@ -496,9 +522,9 @@
                 <label for="format">Format:</label>
                 <div class="select-wrapper">
                     <select id="format" onchange="generateQR()">
-                        <option value="png">PNG Image</option>
-                        <option value="svg">SVG Vector</option>
-                        <option value="jpg">JPG Image</option>
+                        <option value="png" selected>PNG</option>
+                        <option value="jpg">JPG</option>
+                        <option value="svg">SVG</option>
                     </select>
                 </div>
             </div>
@@ -511,74 +537,93 @@
         <div id="qrcode"></div>
     </div>
 
-    <div id="direct" class="container">
-        <div class="regenerate-controls">
-            <label for="newData">New Text/URL:</label>
-            <input type="text" id="newData" placeholder="Enter new text or URL" onkeypress="if(event.key === 'Enter') regenerateQR()">
-            
-            <label for="newSize">Size (px):</label>
-            <div class="select-wrapper">
-                <select id="newSize">
-                    <option value="200">200 x 200</option>
-                    <option value="300">300 x 300</option>
-                    <option value="400" selected>400 x 400</option>
-                    <option value="500">500 x 500</option>
-                    <option value="600">600 x 600</option>
-                    <option value="800">800 x 800</option>
-                    <option value="1000">1000 x 1000</option>
-                    <option value="1200">1200 x 1200</option>
-                    <option value="1500">1500 x 1500</option>
-                    <option value="2000">2000 x 2000</option>
-                </select>
-            </div>
-            
-            <label for="newFormat">Format:</label>
-            <div class="select-wrapper">
-                <select id="newFormat">
-                    <option value="png">PNG Image</option>
-                    <option value="svg">SVG Vector</option>
-                    <option value="jpg">JPG Image</option>
-                </select>
-            </div>
-            
-            <div class="button-group">
-                <button onclick="regenerateQR()">Regenerate</button>
-                <button onclick="downloadQR()">Download</button>
-            </div>
-        </div>
+    <div id="direct">
         <div id="directQrcode"></div>
     </div>
 
     <script>
         let currentQR = null;
-        let currentTheme = 'system';
+        let currentTheme = null;
 
         // Initialize theme
         function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                currentTheme = savedTheme;
-                document.body.className = savedTheme === 'system' ? 'system-theme' : savedTheme + '-theme';
+            // Only initialize theme for GUI mode
+            if (!window.location.search) {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    currentTheme = savedTheme;
+                } else {
+                    // Default to system preference
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    } else {
+                        currentTheme = 'light';
+                    }
+                }
+                
+                // Listen for system theme changes if no manual preference is set
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                    if (!localStorage.getItem('theme')) {
+                        currentTheme = e.matches ? 'dark' : 'light';
+                        applyTheme(currentTheme);
+                        updateToggleButton();
+                    }
+                });
             }
         }
 
-        // Toggle between light, dark, and system themes
+        // Apply theme to document
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            updateToggleButton();
+        }
+
+        // Update toggle button text
+        function updateToggleButton() {
+            if (!window.location.search) {
+                const themeEmoji = {
+                    'light': '☀️',
+                    'dark': '🌙'
+                };
+                const themeNames = {
+                    'light': 'Light',
+                    'dark': 'Dark'
+                };
+                const toggleBtn = document.querySelector('.theme-toggle');
+                toggleBtn.textContent = `${themeEmoji[currentTheme]} ${themeNames[currentTheme]} Theme`;
+            }
+        }
+
+        // Toggle between light and dark themes
         function toggleTheme() {
-            const themes = ['system', 'light', 'dark'];
-            const currentIndex = themes.indexOf(currentTheme);
-            currentTheme = themes[(currentIndex + 1) % themes.length];
-            
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', currentTheme);
-            
-            if (currentTheme === 'system') {
-                document.body.className = 'system-theme';
-            } else {
-                document.body.className = currentTheme + '-theme';
-            }
+            applyTheme(currentTheme);
+            updateToggleButton();
         }
 
-        // Initialize theme when page loads
-        window.addEventListener('load', initializeTheme);
+        // Initialize page
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const data = urlParams.get('data');
+            
+            if (data) {
+                // Direct QR code mode - minimal display
+                document.body.style.margin = '0';
+                document.body.style.padding = '0';
+                document.body.style.background = 'none';
+                document.getElementById('direct').style.display = 'block';
+                document.getElementById('gui').style.display = 'none';
+                document.querySelector('.version-container').style.display = 'none';
+                generateQR(true);
+            } else {
+                // GUI mode
+                document.getElementById('gui').style.display = 'block';
+                document.getElementById('direct').style.display = 'none';
+                initializeTheme();
+                updateToggleButton();
+            }
+        };
 
         function showError(message) {
             const errorEl = document.getElementById('errorMsg');
@@ -614,7 +659,7 @@
             qrcodeEl.innerHTML = '';
             if (!data) {
                 qrcodeEl.style.display = 'none';
-                saveBtn.disabled = true;
+                if (!directMode) saveBtn.disabled = true;
                 return;
             }
 
@@ -634,7 +679,7 @@
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.L,
-                    margin: 4
+                    margin: directMode ? 0 : 4
                 };
 
                 // Create a container for the QR code
@@ -652,17 +697,24 @@
                     setTimeout(() => {
                         const svg = qrContainer.querySelector('svg');
                         if (svg) {
-                            // Add margin to SVG
-                            const existingSvg = svg.outerHTML;
-                            const wrappedSvg = `<div style="background:white;padding:30px;display:inline-block;">${existingSvg}</div>`;
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = wrappedSvg;
-                            
-                            currentQR = {
-                                data: 'data:image/svg+xml;base64,' + btoa(tempDiv.innerHTML),
-                                format: 'svg'
-                            };
-                            if (!directMode) saveBtn.disabled = false;
+                            if (directMode) {
+                                currentQR = {
+                                    data: 'data:image/svg+xml;base64,' + btoa(svg.outerHTML),
+                                    format: 'svg'
+                                };
+                            } else {
+                                // Add margin to SVG for GUI mode
+                                const existingSvg = svg.outerHTML;
+                                const wrappedSvg = `<div style="background:white;padding:15px;display:inline-block;">${existingSvg}</div>`;
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = wrappedSvg;
+                                
+                                currentQR = {
+                                    data: 'data:image/svg+xml;base64,' + btoa(tempDiv.innerHTML),
+                                    format: 'svg'
+                                };
+                                saveBtn.disabled = false;
+                            }
                         }
                     }, 100);
                 } else {
@@ -671,61 +723,38 @@
                     setTimeout(() => {
                         const canvas = qrContainer.querySelector('canvas');
                         if (canvas) {
-                            // Create a new canvas with margin
-                            const newCanvas = document.createElement('canvas');
-                            const margin = 30;
-                            newCanvas.width = canvas.width + (margin * 2);
-                            newCanvas.height = canvas.height + (margin * 2);
-                            const ctx = newCanvas.getContext('2d');
-                            
-                            // Fill with white background
-                            ctx.fillStyle = '#FFFFFF';
-                            ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-                            
-                            // Draw original QR code
-                            ctx.drawImage(canvas, margin, margin);
-                            
-                            currentQR = {
-                                data: newCanvas.toDataURL(`image/${format}`),
-                                format: format
-                            };
-                            if (!directMode) saveBtn.disabled = false;
+                            if (directMode) {
+                                currentQR = {
+                                    data: canvas.toDataURL(`image/${format}`),
+                                    format: format
+                                };
+                            } else {
+                                // Create a new canvas with margin for GUI mode
+                                const newCanvas = document.createElement('canvas');
+                                const margin = 15;
+                                newCanvas.width = canvas.width + (margin * 2);
+                                newCanvas.height = canvas.height + (margin * 2);
+                                const ctx = newCanvas.getContext('2d');
+                                
+                                // Fill with white background
+                                ctx.fillStyle = '#FFFFFF';
+                                ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+                                
+                                // Draw original QR code
+                                ctx.drawImage(canvas, margin, margin);
+                                
+                                currentQR = {
+                                    data: newCanvas.toDataURL(`image/${format}`),
+                                    format: format
+                                };
+                                saveBtn.disabled = false;
+                            }
                         }
                     }, 100);
                 }
             } catch (error) {
                 if (!directMode) showError('Error generating QR code: ' + error.message);
             }
-        }
-
-        function regenerateQR() {
-            const data = document.getElementById('newData').value.trim();
-            const size = document.getElementById('newSize').value;
-            const format = document.getElementById('newFormat').value;
-            
-            // Update URL without reloading
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.set('data', data);
-            newUrl.searchParams.set('size', size);
-            newUrl.searchParams.set('type', format);
-            window.history.pushState({}, '', newUrl);
-            
-            generateQR(true);
-        }
-
-        function downloadQR() {
-            if (!currentQR) return;
-            
-            const format = document.getElementById('newFormat').value;
-            const data = document.getElementById('newData').value.trim() || new URLSearchParams(window.location.search).get('data');
-            const filename = `qrcode-${data.substring(0, 30)}.${currentQR.format}`;
-
-            const link = document.createElement('a');
-            link.href = currentQR.data;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
 
         function saveQR() {
@@ -745,26 +774,6 @@
             link.click();
             document.body.removeChild(link);
         }
-
-        // Initialize page
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const data = urlParams.get('data');
-            
-            if (data) {
-                // Direct QR code mode
-                document.getElementById('direct').style.display = 'block';
-                document.getElementById('gui').style.display = 'none';
-                document.getElementById('newData').value = data;
-                document.getElementById('newSize').value = urlParams.get('size') || 400;
-                document.getElementById('newFormat').value = urlParams.get('type') || 'png';
-                generateQR(true);
-            } else {
-                // GUI mode
-                document.getElementById('gui').style.display = 'block';
-                document.getElementById('direct').style.display = 'none';
-            }
-        };
     </script>
 </body>
 </html> 
