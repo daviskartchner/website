@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+        #qrcode {
+            text-align: center;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            padding: 20px;
+        }
+        #status {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="status">Generating QR Code...</div>
+    <div id="qrcode"></div>
+
+    <script>
+        // Show status message
+        const status = document.getElementById('status');
+        status.style.display = 'block';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get('data');
+        const type = urlParams.get('type') || 'svg';
+
+        if (!data) {
+            document.getElementById('qrcode').innerHTML = '<div class="error">Error: No data parameter provided.<br>Example usage: ?data=Hello%20World&type=png</div>';
+            status.style.display = 'none';
+        } else {
+            const qrcodeElement = document.getElementById('qrcode');
+            const options = {
+                width: 400,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            };
+            
+            try {
+                switch (type.toLowerCase()) {
+                    case 'png':
+                        QRCode.toCanvas(qrcodeElement, data, options, function (error) {
+                            if (error) {
+                                qrcodeElement.innerHTML = '<div class="error">Error generating QR code: ' + error + '</div>';
+                            }
+                            status.style.display = 'none';
+                        });
+                        break;
+                        
+                    case 'url':
+                        QRCode.toDataURL(data, options, function (err, url) {
+                            if (err) {
+                                qrcodeElement.innerHTML = '<div class="error">Error generating QR code: ' + err + '</div>';
+                            } else {
+                                const img = document.createElement('img');
+                                img.src = url;
+                                qrcodeElement.innerHTML = '';
+                                qrcodeElement.appendChild(img);
+                            }
+                            status.style.display = 'none';
+                        });
+                        break;
+                        
+                    case 'svg':
+                    default:
+                        QRCode.toString(data, { ...options, type: 'svg' }, function (error, string) {
+                            if (error) {
+                                qrcodeElement.innerHTML = '<div class="error">Error generating QR code: ' + error + '</div>';
+                            } else {
+                                qrcodeElement.innerHTML = string;
+                            }
+                            status.style.display = 'none';
+                        });
+                        break;
+                }
+            } catch (error) {
+                qrcodeElement.innerHTML = '<div class="error">Error generating QR code: ' + error + '</div>';
+                status.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 
