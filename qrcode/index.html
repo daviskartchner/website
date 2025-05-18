@@ -27,34 +27,39 @@
             margin-top: 20px;
             text-align: center;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>QR Code Generator API</h1>
-    
-    <div class="api-docs">
-        <h2>Usage</h2>
-        <p>To generate a QR code, use the following URL format:</p>
-        <code>https://daviskartchner.com/qrcode/?data=[your-data]&type=[type]</code>
+    <div id="documentation">
+        <h1>QR Code Generator API</h1>
         
-        <h3>Parameters:</h3>
-        <ul>
-            <li><strong>data</strong> (required): The content to encode in the QR code</li>
-            <li><strong>type</strong> (optional): Output format
-                <ul>
-                    <li>svg (default) - Returns SVG format</li>
-                    <li>png - Returns PNG format</li>
-                    <li>url - Returns URL format</li>
-                </ul>
-            </li>
-        </ul>
-        
-        <h3>Examples:</h3>
-        <ul>
-            <li>Generate SVG QR code: <code>https://daviskartchner.com/qrcode/?data=Hello%20World</code></li>
-            <li>Generate PNG QR code: <code>https://daviskartchner.com/qrcode/?data=Hello%20World&type=png</code></li>
-            <li>Generate URL QR code: <code>https://daviskartchner.com/qrcode/?data=https://example.com&type=url</code></li>
-        </ul>
+        <div class="api-docs">
+            <h2>Usage</h2>
+            <p>To generate a QR code, use the following URL format:</p>
+            <code>https://daviskartchner.com/qrcode/?data=[your-data]&type=[type]</code>
+            
+            <h3>Parameters:</h3>
+            <ul>
+                <li><strong>data</strong> (required): The content to encode in the QR code</li>
+                <li><strong>type</strong> (optional): Output format
+                    <ul>
+                        <li>svg (default) - Returns SVG format</li>
+                        <li>png - Returns PNG format</li>
+                        <li>url - Returns URL format</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Examples:</h3>
+            <ul>
+                <li>Generate SVG QR code: <code>https://daviskartchner.com/qrcode/?data=Hello%20World</code></li>
+                <li>Generate PNG QR code: <code>https://daviskartchner.com/qrcode/?data=Hello%20World&type=png</code></li>
+                <li>Generate URL QR code: <code>https://daviskartchner.com/qrcode/?data=https://example.com&type=url</code></li>
+            </ul>
+        </div>
     </div>
 
     <div id="qrcode"></div>
@@ -66,6 +71,8 @@
         const type = urlParams.get('type') || 'svg';
 
         if (data) {
+            // Hide documentation when generating QR code
+            document.getElementById('documentation').classList.add('hidden');
             const qrcodeElement = document.getElementById('qrcode');
             
             switch (type.toLowerCase()) {
