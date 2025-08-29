@@ -114,6 +114,116 @@
                       box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Desktop layout */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+        }
+        .left-pane { min-width: 0; }
+        .right-pane {
+            position: relative;
+        }
+        .qr-panel {
+            position: sticky;
+            top: 16px;
+            background: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: var(--surface-1);
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .qr-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .header-save {
+            padding: 0 12px;
+            height: 32px;
+            border: none;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            text-transform: none;
+            cursor: pointer;
+            background: var(--button-bg);
+            color: var(--on-primary);
+            box-shadow: var(--surface-1);
+        }
+        .header-save:disabled {
+            /* Better contrast in dark mode while still looking disabled */
+            background-color: rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.7);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .qr-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            background: var(--version-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px dashed var(--border-color);
+        }
+        .qr-frame #qrcode {
+            padding: 0 !important;
+            background: transparent !important;
+        }
+        .qr-frame #qrcode > div {
+            /* This div is created by the QR code library.
+               It was previously inheriting flex properties which caused sizing issues.
+               The rule is kept to override any potential inherited styles. */
+            display: block !important;
+        }
+        .qr-placeholder {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 24px 8px;
+        }
+        .qr-frame .qr-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .qr-frame #qrcode canvas,
+        .qr-frame #qrcode svg {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            image-rendering: pixelated;
+        }
+        :root[data-theme='light'] .header-save:disabled {
+            background-color: rgba(0, 0, 0, 0.12);
+            color: rgba(0, 0, 0, 0.6);
+        }
+        :root[data-theme='dark'] .header-save:disabled {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .qr-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        @media (min-width: 1000px) {
+            .container { max-width: 1100px; }
+        }
+
         h1 {
             text-align: center;
             color: var(--text-color);
@@ -315,6 +425,16 @@
             aspect-ratio: 1;
             width: fit-content;
         }
+        /* When in the framed preview, remove extra margin/padding/bg to keep square */
+        .qr-frame #qrcode {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+    /* Right-pane QR should not auto-center outside its panel */
+    .right-pane #qrcode { margin: 12px auto 4px; }
 
         .advanced-toggle {
             color: var(--text-secondary);
@@ -611,6 +731,10 @@
                 padding: 16px;
             }
 
+            .page-layout {
+                display: block;
+            }
+
             .controls {
                 gap: 16px;
             }
@@ -642,6 +766,10 @@
                 font-size: 1.5rem;
                 line-height: 2rem;
             }
+
+            /* Mobile: stack panes so preview appears below */
+            .right-pane { margin-top: 16px; }
+            #qrcode { margin-top: 16px; }
         }
 
         .color-button {
@@ -799,70 +927,72 @@
     <div id="gui" class="container">
         <h1>QR Code Generator</h1>
 
-        <div class="error" id="errorMsg"></div>
+        <div class="page-layout">
+            <div class="left-pane">
+                <div class="error" id="errorMsg"></div>
 
-        <div class="template-section">
-            <div class="input-group">
-                <label for="template">Template</label>
-                <div class="select-wrapper">
-                    <select id="template" onchange="handleTemplateChange()">
-                        <option value="custom">None</option>
-                        <option value="url">URL (https://)</option>
-                        <option value="wifi">WiFi Network</option>
-                        <option value="email">Email Address</option>
-                        <option value="tel">Phone Number</option>
-                        <option value="sms">SMS</option>
-                        <option value="vcard">Contact Card</option>
-                    </select>
+                <div class="template-section">
+                    <div class="input-group">
+                        <label for="template">Template</label>
+                        <div class="select-wrapper">
+                            <select id="template" onchange="handleTemplateChange()">
+                                <option value="custom">None</option>
+                                <option value="url">URL (https://)</option>
+                                <option value="wifi">WiFi Network</option>
+                                <option value="email">Email Address</option>
+                                <option value="tel">Phone Number</option>
+                                <option value="sms">SMS</option>
+                                <option value="vcard">Contact Card</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="templateFields" class="template-fields">
+                        <!-- Fields will be dynamically populated -->
+                    </div>
                 </div>
-            </div>
-            <div id="templateFields" class="template-fields">
-                <!-- Fields will be dynamically populated -->
-            </div>
-        </div>
 
-        <div class="input-group">
-            <label for="data">Text</label>
-            <input type="text" id="data" placeholder="Enter text" 
-                onkeyup="validateAndGenerate()" 
-                onpaste="setTimeout(validateAndGenerate, 0)"
-                maxlength="700">
-        </div>
-
-        <div class="controls">
-            <div class="input-group">
-                <label for="size">Size</label>
-                <div class="select-wrapper">
-                    <select id="size" onchange="generateQR()">
-                        <option value="200">200 × 200</option>
-                        <option value="300">300 × 300</option>
-                        <option value="400" selected>400 × 400</option>
-                        <option value="500">500 × 500</option>
-                        <option value="600">600 × 600</option>
-                        <option value="800">800 × 800</option>
-                        <option value="1000">1000 × 1000</option>
-                        <option value="1200">1200 × 1200</option>
-                        <option value="1500">1500 × 1500</option>
-                        <option value="2000">2000 × 2000</option>
-                    </select>
+                <div class="input-group">
+                    <label for="data">Text</label>
+                    <input type="text" id="data" placeholder="Enter text" 
+                        onkeyup="validateAndGenerate()" 
+                        onpaste="setTimeout(validateAndGenerate, 0)"
+                        maxlength="700">
                 </div>
-            </div>
 
-            <div class="input-group">
-                <label for="format">Format</label>
-                <div class="select-wrapper">
-                    <select id="format" onchange="generateQR()">
-                        <option value="png" selected>PNG</option>
-                        <option value="jpg">JPG</option>
-                        <option value="svg">SVG</option>
-                    </select>
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="size">Size</label>
+                        <div class="select-wrapper">
+                            <select id="size" onchange="generateQR()">
+                                <option value="200">200 × 200</option>
+                                <option value="300">300 × 300</option>
+                                <option value="400" selected>400 × 400</option>
+                                <option value="500">500 × 500</option>
+                                <option value="600">600 × 600</option>
+                                <option value="800">800 × 800</option>
+                                <option value="1000">1000 × 1000</option>
+                                <option value="1200">1200 × 1200</option>
+                                <option value="1500">1500 × 1500</option>
+                                <option value="2000">2000 × 2000</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="format">Format</label>
+                        <div class="select-wrapper">
+                            <select id="format" onchange="generateQR()">
+                                <option value="png" selected>PNG</option>
+                                <option value="jpg">JPG</option>
+                                <option value="svg">SVG</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-    <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="advancedSection" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
-        
-        <div class="advanced-section" id="advancedSection">
+                <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="advancedSection" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
+                
+                <div class="advanced-section" id="advancedSection">
             <div class="advanced-tabs">
                 <button class="tab-button active" onclick="showTab('style')">Style</button>
                 <button class="tab-button" onclick="showTab('output')">Output</button>
@@ -982,13 +1112,20 @@
                     </div>
                 </div>
             </div>
-        </div>
+                </div>
 
-        <div class="button-group">
-            <button id="saveBtn" onclick="saveQR()" disabled>Save</button>
-        </div>
+            </div>
 
-        <div id="qrcode"></div>
+            <aside class="right-pane">
+                <div class="qr-panel" data-has-qr="false">
+                    <div class="qr-panel-header"><span>Preview</span><button id="saveBtn" class="header-save" onclick="saveQR()" disabled><span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">download</span>Save</button></div>
+                    <div class="qr-frame">
+                        <div class="qr-placeholder">Your QR code will appear here once generated.</div>
+                        <div id="qrcode"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
 
     <div id="direct">
@@ -1309,6 +1446,18 @@
                 document.getElementById('direct').style.display = 'none';
                 initializeTheme();
                 updateToggleButton();
+
+                // Mobile-only: auto-show theme toggle for ~7 seconds
+                try {
+                    const isMobile = window.matchMedia && window.matchMedia('(max-width: 600px)').matches;
+                    if (isMobile) {
+                        const themeToggle = document.querySelector('.theme-toggle');
+                        if (themeToggle) {
+                            themeToggle.classList.add('show');
+                            setTimeout(() => themeToggle.classList.remove('show'), 7000);
+                        }
+                    }
+                } catch (e) { /* no-op */ }
             }
         };
 
@@ -1390,11 +1539,21 @@
             if (!data) {
                 qrcodeEl.style.display = 'none';
                 if (!directMode) saveBtn.disabled = true;
+                // Restore placeholder if present (right pane)
+                const placeholder = document.querySelector('.qr-frame .qr-placeholder');
+                const qrPanel = document.querySelector('.qr-panel');
+                if (placeholder) placeholder.style.display = '';
+                if (qrPanel) qrPanel.setAttribute('data-has-qr', 'false');
                 return;
             }
 
             // Show QR code container
             qrcodeEl.style.display = 'flex';
+            // Hide placeholder if present (right pane)
+            const placeholder = document.querySelector('.qr-frame .qr-placeholder');
+            const qrPanel = document.querySelector('.qr-panel');
+            if (placeholder) placeholder.style.display = 'none';
+            if (qrPanel) qrPanel.setAttribute('data-has-qr', 'true');
 
             if (!validateSize(size)) {
                 if (!directMode) showError('Size must be between 200 and 2000 pixels');
@@ -1414,7 +1573,8 @@
                     colorDark: document.getElementById('colorDark').value,
                     colorLight: document.getElementById('colorLight').value,
                     correctLevel: QRCode.CorrectLevel[errorCorrectionLevel],
-                    margin: padding,
+                    // Use container padding for preview; keep library margin at 0 to avoid doubling
+                    margin: 0,
                     quality: outputQuality / 100,
                     cornerRadius: cornerRadius,
                 };
@@ -1423,6 +1583,7 @@
                 const qrContainer = document.createElement('div');
                 qrContainer.id = 'qrcode-container';
                 qrContainer.style.padding = padding + 'px';
+                qrContainer.style.backgroundColor = options.colorLight;
                 qrcodeEl.appendChild(qrContainer);
 
                 // Generate QR code
@@ -1616,4 +1777,4 @@
         window.addEventListener('load', initRangeFills);
     </script>
 </body>
-</html> 
+</html>
