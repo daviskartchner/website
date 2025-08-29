@@ -1017,7 +1017,7 @@
 </head>
 <body>
     <div class="version-container">
-        <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.7.3</div>
+    <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.9.0</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
@@ -1241,6 +1241,8 @@
         let currentQR = null;
         let currentTheme = null;
         let currentTemplate = 'custom';
+    // Sequence to ensure only latest render applies
+    let renderSeq = 0;
 
         // Validation functions
         function validateEmail(email) {
@@ -1593,6 +1595,7 @@
 
     function generateQR(directMode = false) {
             let data, size, format;
+            const thisSeq = ++renderSeq;
             
             if (directMode) {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1608,8 +1611,7 @@
             const qrcodeEl = directMode ? document.getElementById('directQrcode') : document.getElementById('qrcode');
             const saveBtn = document.getElementById('saveBtn');
 
-            // Clear previous QR code and handle empty input
-            qrcodeEl.innerHTML = '';
+            // Handle empty input: clear preview and reset state
             if (!data) {
                 qrcodeEl.style.display = 'none';
                 if (!directMode) saveBtn.disabled = true;
@@ -1653,17 +1655,33 @@
                     cornerRadius: cornerRadius,
                 };
 
-                // Create a container for the QR code
+                // Prepare an offscreen work area to render without affecting the visible preview
+                let work = document.getElementById('qr-offscreen-work');
+                if (!work) {
+                    work = document.createElement('div');
+                    work.id = 'qr-offscreen-work';
+                    work.style.position = 'fixed';
+                    work.style.left = '-99999px';
+                    work.style.top = '-99999px';
+                    work.style.width = '0';
+                    work.style.height = '0';
+                    work.style.overflow = 'hidden';
+                    work.style.opacity = '0';
+                    document.body.appendChild(work);
+                } else {
+                    work.innerHTML = '';
+                }
+
+                // Create a container for the QR code in the offscreen area
                 const qrContainer = document.createElement('div');
                 qrContainer.id = 'qrcode-container';
                 qrContainer.style.padding = padding + 'px';
                 qrContainer.style.backgroundColor = options.colorLight;
-                // Reset any previous scaling
                 qrContainer.style.transform = '';
                 qrContainer.style.transformOrigin = 'center';
                 qrContainer.style.maxWidth = '100%';
                 qrContainer.style.maxHeight = '100%';
-                qrcodeEl.appendChild(qrContainer);
+                work.appendChild(qrContainer);
 
                 // Generate QR code
                 if (format === 'svg') {
@@ -1673,56 +1691,62 @@
                     });
                     
                     setTimeout(() => {
+                        // If a newer render kicked off, abort this one
+                        if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
                         const svg = qrContainer.querySelector('svg');
                         if (svg) {
-                            if (directMode) {
-                                currentQR = {
-                                    data: 'data:image/svg+xml;base64,' + btoa(svg.outerHTML),
-                                    format: 'svg'
-                                };
-                            } else {
-                                const wrappedSvg = `<div style="background:${options.colorLight};padding:${padding}px;display:inline-block;">${svg.outerHTML}</div>`;
-                                const tempDiv = document.createElement('div');
-                                tempDiv.innerHTML = wrappedSvg;
-                                
-                                currentQR = {
-                                    data: 'data:image/svg+xml;base64,' + btoa(tempDiv.innerHTML),
-                                    format: 'svg'
-                                };
-                                saveBtn.disabled = false;
-                            }
+                            const dataUrl = (() => {
+                                if (directMode) {
+                                    return 'data:image/svg+xml;base64,' + btoa(svg.outerHTML);
+                                } else {
+                                    const wrappedSvg = `<div style="background:${options.colorLight};padding:${padding}px;display:inline-block;">${svg.outerHTML}</div>`;
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.innerHTML = wrappedSvg;
+                                    return 'data:image/svg+xml;base64,' + btoa(tempDiv.innerHTML);
+                                }
+                            })();
+
+                            // If outdated, abort
+                            if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
+
+                            currentQR = { data: dataUrl, format: 'svg' };
+                            if (!directMode) saveBtn.disabled = false;
+
                             if (!directMode) setPreviewFromCurrent();
+                            work.innerHTML = '';
                         }
                     }, 100);
                 } else {
                     const qr = new QRCode(qrContainer, options);
                     
                     setTimeout(() => {
+                        // If a newer render kicked off, abort this one
+                        if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
                         const canvas = qrContainer.querySelector('canvas');
                         if (canvas) {
+                            let dataUrl;
                             if (directMode) {
-                                currentQR = {
-                                    data: canvas.toDataURL(`image/${format}`, options.quality),
-                                    format: format
-                                };
+                                dataUrl = canvas.toDataURL(`image/${format}`, options.quality);
                             } else {
                                 const newCanvas = document.createElement('canvas');
                                 const margin = padding;
                                 newCanvas.width = canvas.width + (margin * 2);
                                 newCanvas.height = canvas.height + (margin * 2);
                                 const ctx = newCanvas.getContext('2d');
-                                
+                                ctx.imageSmoothingEnabled = false;
                                 ctx.fillStyle = options.colorLight;
                                 ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
                                 ctx.drawImage(canvas, margin, margin);
-                                
-                                currentQR = {
-                                    data: newCanvas.toDataURL(`image/${format}`, options.quality),
-                                    format: format
-                                };
-                                saveBtn.disabled = false;
+                                dataUrl = newCanvas.toDataURL(`image/${format}`, options.quality);
                             }
+
+                            // If outdated, abort
+                            if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
+
+                            currentQR = { data: dataUrl, format: format };
+                            if (!directMode) saveBtn.disabled = false;
                             if (!directMode) setPreviewFromCurrent();
+                            work.innerHTML = '';
                         }
                     }, 100);
                 }
@@ -1734,12 +1758,15 @@
         function setPreviewFromCurrent() {
             const qrcodeEl = document.getElementById('qrcode');
             if (!qrcodeEl || !currentQR) return;
-            qrcodeEl.innerHTML = '';
-            const img = document.createElement('img');
-            img.className = 'qr-preview';
-            img.alt = 'QR code preview';
+            let img = qrcodeEl.querySelector('img.qr-preview');
+            if (!img) {
+                img = document.createElement('img');
+                img.className = 'qr-preview';
+                img.alt = 'QR code preview';
+                qrcodeEl.appendChild(img);
+            }
+            // Swap the source only when new data is ready to avoid flicker
             img.src = currentQR.data;
-            qrcodeEl.appendChild(img);
         }
 
         function saveQR() {
