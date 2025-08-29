@@ -880,9 +880,9 @@
         }
 
         .md-tooltip {
-            position: absolute;
-            right: 0;
-            bottom: calc(100% + 10px);
+            position: fixed; /* escape accordion overflow clipping */
+            left: -10000px; /* offscreen until positioned */
+            top: -10000px;
             min-width: 260px;
             max-width: 420px;
             padding: 12px 14px;
@@ -897,31 +897,60 @@
             transform: translateY(4px);
             visibility: hidden;
             transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
-            z-index: 10;
+            z-index: 1000; /* above panels */
+            pointer-events: none;
         }
 
-        .md-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            right: 12px;
-            width: 12px;
-            height: 12px;
-            background: var(--container-bg);
-            border-left: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            transform: rotate(45deg);
-        }
-
-        .md-help:hover .md-tooltip,
-        .md-help:focus-within .md-tooltip {
+        /* Visible state toggled via JS */
+        .md-tooltip.show {
             opacity: 1;
             transform: translateY(0);
             visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Arrow for side placement: border (after) + fill (before) triangles */
+        .md-tooltip::before,
+        .md-tooltip::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        /* Right side (tooltip to the right of trigger, arrow on left) */
+        .md-tooltip.tooltip-right::after { /* border */
+            left: -8px;
+            top: 50%;
+            margin-top: -8px;
+            border-width: 8px 8px 8px 0;
+            border-color: transparent var(--border-color) transparent transparent;
+        }
+        .md-tooltip.tooltip-right::before { /* fill */
+            left: -7px;
+            top: 50%;
+            margin-top: -7px;
+            border-width: 7px 7px 7px 0;
+            border-color: transparent var(--container-bg) transparent transparent;
+        }
+        /* Left side (tooltip to the left of trigger, arrow on right) */
+        .md-tooltip.tooltip-left::after { /* border */
+            right: -8px;
+            top: 50%;
+            margin-top: -8px;
+            border-width: 8px 0 8px 8px;
+            border-color: transparent transparent transparent var(--border-color);
+        }
+        .md-tooltip.tooltip-left::before { /* fill */
+            right: -7px;
+            top: 50%;
+            margin-top: -7px;
+            border-width: 7px 0 7px 7px;
+            border-color: transparent transparent transparent var(--container-bg);
         }
 
         /* Clear separation between setting groups */
-        .tab-content .input-group + .input-group {
+    .tab-content .input-group + .input-group {
             margin-top: 24px; /* default for non-advanced areas */
         }
         .advanced-section .tab-content .input-group {
@@ -1017,7 +1046,7 @@
 </head>
 <body>
     <div class="version-container">
-    <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.9.1</div>
+    <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.9.2</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
@@ -1981,6 +2010,91 @@
 
         // Initialize on load and after advanced section opens
         window.addEventListener('load', initRangeFills);
+
+        // Smart tooltip positioning to avoid clipping and prefer right side
+        function positionTooltip(trigger, tooltip) {
+            const margin = 8; // gap between trigger and tooltip
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const rect = trigger.getBoundingClientRect();
+
+            // Measure tooltip by temporarily making it visible offscreen
+            tooltip.style.left = '-10000px';
+            tooltip.style.top = '-10000px';
+            tooltip.classList.add('show');
+            const tw = tooltip.offsetWidth;
+            const th = tooltip.offsetHeight;
+
+            // Try right placement first
+            let left = rect.right + margin;
+            let top = rect.top + (rect.height - th) / 2;
+            let sideClass = 'tooltip-right';
+
+            // If it overflows to the right, flip to left
+            if (left + tw > vw - margin) {
+                left = rect.left - margin - tw;
+                sideClass = 'tooltip-left';
+            }
+
+            // Clamp vertically within viewport
+            if (top < margin) top = margin;
+            if (top + th > vh - margin) top = vh - margin - th;
+
+            // Apply side class and position
+            tooltip.classList.remove('tooltip-left', 'tooltip-right');
+            tooltip.classList.add(sideClass);
+            tooltip.style.left = Math.round(left) + 'px';
+            tooltip.style.top = Math.round(top) + 'px';
+        }
+
+        function setupTooltips() {
+            const helps = document.querySelectorAll('.md-help');
+            helps.forEach(help => {
+                const btn = help.querySelector('.help-button');
+                const tip = help.querySelector('.md-tooltip');
+                if (!btn || !tip) return;
+
+                const show = () => {
+                    positionTooltip(btn, tip);
+                    tip.classList.add('show');
+                };
+                const hide = () => {
+                    tip.classList.remove('show');
+                    tip.classList.remove('tooltip-left', 'tooltip-right');
+                    tip.style.left = '-10000px';
+                    tip.style.top = '-10000px';
+                };
+
+                // Mouse and keyboard focus interactions
+                btn.addEventListener('mouseenter', show);
+                btn.addEventListener('mouseleave', hide);
+                btn.addEventListener('focus', show);
+                btn.addEventListener('blur', hide);
+
+                // Touch support: toggle on tap, hide on outside tap
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (tip.classList.contains('show')) {
+                        hide();
+                    } else {
+                        show();
+                    }
+                }, { passive: false });
+
+                // Hide on scroll or resize to avoid misplacement
+                window.addEventListener('scroll', hide, { passive: true });
+                window.addEventListener('resize', () => {
+                    if (tip.classList.contains('show')) positionTooltip(btn, tip);
+                });
+            });
+        }
+
+        // Initialize tooltips after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupTooltips);
+        } else {
+            setupTooltips();
+        }
     </script>
 </body>
 </html>
