@@ -1407,17 +1407,23 @@
             currentTemplate = templateSelect.value;
             const template = templates[currentTemplate];
 
-            // Clear and hide the main input if using a template
+            // Clear and hide the main input if using a template; restore for custom (None)
             if (currentTemplate !== 'custom') {
                 dataInput.parentElement.style.display = 'none';
+                // ensure template fields area is visible when using a template
+                fieldsContainer.style.display = 'block';
             } else {
+                // Show the freeform input and fully clear/hide template fields
                 dataInput.parentElement.style.display = 'block';
+                fieldsContainer.innerHTML = '';
+                fieldsContainer.style.display = 'none';
                 fieldsContainer.classList.remove('visible');
                 return;
             }
 
             // Show template fields
             fieldsContainer.innerHTML = '';
+            fieldsContainer.style.display = 'block';
             template.fields.forEach(field => {
                 const fieldDiv = document.createElement('div');
                 fieldDiv.className = 'template-field';
