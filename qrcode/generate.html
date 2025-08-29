@@ -6,6 +6,8 @@
     <title>QR Code Generator</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Optional monospace used in small badges -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap">
     <script>
         // Early theme initialization to prevent flash
         (function() {
@@ -38,6 +40,10 @@
             --button-hover: #1565c0;
             --save-button-bg: #2e7d32;
             --save-button-hover: #1b5e20;
+            --primary: #1976d2;
+            --primary-variant: #1565c0;
+            --on-primary: #ffffff;
+            --range-track-bg: rgba(0, 0, 0, 0.18);
             --error-bg: #ffebee;
             --error-color: #d32f2f;
             --version-bg: #f5f5f5;
@@ -65,6 +71,10 @@
             --button-hover: #42a5f5;
             --save-button-bg: #66bb6a;
             --save-button-hover: #4caf50;
+            --primary: #90caf9;
+            --primary-variant: #42a5f5;
+            --on-primary: #1e1e1e;
+            --range-track-bg: rgba(255, 255, 255, 0.22);
             --error-bg: #451c1c;
             --error-color: #ef5350;
             --version-bg: #2d2d2d;
@@ -375,7 +385,7 @@
             margin: 0;
         }
 
-        .advanced-tabs {
+    .advanced-tabs {
             display: flex;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 24px;
@@ -411,9 +421,15 @@
             bottom: -1px;
             left: var(--underline-position);
             height: 2px;
-            background-color: rgb(79, 79, 79);
+            background-color: var(--primary);
             width: var(--underline-width);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+        }
+
+        /* Prevent initial flicker/misalignment until positioned */
+        .advanced-tabs:not([data-underline-ready])::after {
+            opacity: 0;
         }
 
         .tab-button:hover {
@@ -422,7 +438,7 @@
         }
 
         .tab-button.active {
-            color: rgb(79, 79, 79);
+            color: var(--primary);
         }
 
         .tab-content {
@@ -437,14 +453,15 @@
         .color-input-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .color-preview {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
+            box-shadow: var(--surface-1);
         }
 
         input[type="color"] {
@@ -455,9 +472,70 @@
             visibility: hidden;
         }
 
+        /* Let the color input anchor to the button position */
+        .color-button-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .color-button-wrapper > input[type="color"].hidden-color-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: visible;
+            appearance: none;
+            cursor: pointer;
+        }
+
         input[type="range"] {
             width: 100%;
-            max-width: 200px;
+            max-width: 260px;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(var(--primary), var(--primary)) no-repeat, var(--range-track-bg);
+            background-size: var(--fill, 0%) 100%;
+            outline: none;
+        }
+
+        /* WebKit (Chrome, Safari) */
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: transparent;
+            border-radius: 3px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--container-bg);
+            border: 2px solid var(--primary);
+            box-shadow: var(--surface-1);
+            margin-top: -6px; /* center thumb over 6px track */
+        }
+
+        /* Firefox */
+        input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: var(--range-track-bg);
+            border: none;
+            border-radius: 3px;
+        }
+        input[type="range"]::-moz-range-progress {
+            height: 6px;
+            background: var(--primary);
+            border: none;
+            border-radius: 3px 0 0 3px;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--container-bg);
+            border: 2px solid var(--primary);
+            box-shadow: var(--surface-1);
         }
 
         .version-container {
@@ -590,7 +668,7 @@
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .input-group:last-child {
@@ -599,6 +677,117 @@
 
         .tooltip-wrapper {
             margin-bottom: 8px;
+        }
+
+        /* Label row with contextual help */
+        .label-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .md-help {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .help-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            min-width: 0;
+            padding: 0;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            box-shadow: none;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .help-button:hover,
+        .help-button:focus {
+            background-color: var(--hover-overlay);
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .help-button .material-icons {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .md-tooltip {
+            position: absolute;
+            right: 0;
+            bottom: calc(100% + 10px);
+            min-width: 260px;
+            max-width: 420px;
+            padding: 12px 14px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--surface-3);
+            font-size: 0.875rem;
+            line-height: 1.45;
+            opacity: 0;
+            transform: translateY(4px);
+            visibility: hidden;
+            transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+            z-index: 10;
+        }
+
+        .md-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 12px;
+            width: 12px;
+            height: 12px;
+            background: var(--container-bg);
+            border-left: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            transform: rotate(45deg);
+        }
+
+        .md-help:hover .md-tooltip,
+        .md-help:focus-within .md-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        /* Clear separation between setting groups */
+        .tab-content .input-group + .input-group {
+            margin-top: 24px; /* default for non-advanced areas */
+        }
+        .advanced-section .tab-content .input-group {
+            padding-bottom: 8px;
+        }
+        .advanced-section .tab-content .input-group + .input-group {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Stronger, clearer setting headers inside Advanced */
+        .advanced-section .label-row > label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-color);
+            letter-spacing: 0.015em;
         }
     </style>
 </head>
@@ -681,43 +870,78 @@
             </div>
             <div class="tab-content active" id="styleTab">
                 <div class="input-group">
-                    <label for="colorDark">QR Code Color</label>
+                    <div class="label-row">
+                        <label for="colorDark">QR Code Color</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What is QR code color?" aria-describedby="tip-colorDark"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-colorDark" class="md-tooltip" role="tooltip">Sets the color of the QR modules (the small squares). Choose a dark, high-contrast color for reliable scanning.</div>
+                        </span>
+                    </div>
                     <div class="color-input-wrapper">
                         <div class="color-preview" id="darkPreview"></div>
-                        <input type="color" id="colorDark" value="#000000" onchange="updateColorPreview('dark'); generateQR()">
-                        <button class="color-button" onclick="document.getElementById('colorDark').click()">Choose Color</button>
+                        <span class="color-button-wrapper">
+                            <button class="color-button" type="button">Choose Color</button>
+                            <input type="color" id="colorDark" class="hidden-color-input" value="#000000" onchange="updateColorPreview('dark'); generateQR()">
+                        </span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="colorLight">Background Color</label>
+                    <div class="label-row">
+                        <label for="colorLight">Background Color</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What is background color?" aria-describedby="tip-colorLight"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-colorLight" class="md-tooltip" role="tooltip">The background (quiet zone) behind the QR. Keep it light for best contrast. This also fills the padding area.</div>
+                        </span>
+                    </div>
                     <div class="color-input-wrapper">
                         <div class="color-preview" id="lightPreview"></div>
-                        <input type="color" id="colorLight" value="#ffffff" onchange="updateColorPreview('light'); generateQR()">
-                        <button class="color-button" onclick="document.getElementById('colorLight').click()">Choose Color</button>
+                        <span class="color-button-wrapper">
+                            <button class="color-button" type="button">Choose Color</button>
+                            <input type="color" id="colorLight" class="hidden-color-input" value="#ffffff" onchange="updateColorPreview('light'); generateQR()">
+                        </span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="cornerRadius">Corner Radius</label>
+                    <div class="label-row">
+                        <label for="cornerRadius">Corner Radius</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What is corner radius?" aria-describedby="tip-cornerRadius"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-cornerRadius" class="md-tooltip" role="tooltip">Rounds the corners of the QR modules for a softer look. Extreme rounding can reduce scanning reliability.</div>
+                        </span>
+                    </div>
                     <input type="range" id="cornerRadius" min="0" max="50" value="0" onchange="generateQR()" oninput="updateRangeValue('cornerRadius')">
                     <span class="range-value" id="cornerRadiusValue">0</span>
                 </div>
                 <div class="input-group">
-                    <label for="padding">Padding</label>
+                    <div class="label-row">
+                        <label for="padding">Padding</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What is padding?" aria-describedby="tip-padding"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-padding" class="md-tooltip" role="tooltip">Adds space around the QR in the exported image (pixels). A larger quiet zone can improve scan reliability.</div>
+                        </span>
+                    </div>
                     <input type="range" id="padding" min="0" max="50" value="15" onchange="generateQR()" oninput="updateRangeValue('padding')">
                     <span class="range-value" id="paddingValue">15</span>
                 </div>
             </div>
             <div class="tab-content" id="outputTab">
                 <div class="input-group">
-                    <label for="outputQuality">Output Quality</label>
+                    <div class="label-row">
+                        <label for="outputQuality">Output Quality</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What does output quality affect?" aria-describedby="tip-outputQuality"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-outputQuality" class="md-tooltip" role="tooltip">Controls compression for PNG/JPG downloads. Higher values = crisper image and larger file. SVG exports are unaffected.</div>
+                        </span>
+                    </div>
                     <input type="range" id="outputQuality" min="1" max="100" value="90" onchange="generateQR()" oninput="updateRangeValue('outputQuality')">
                     <span class="range-value" id="outputQualityValue">90</span>
                 </div>
                 <div class="input-group">
-                    <div class="tooltip-wrapper">
+                    <div class="label-row">
                         <label for="filenamePattern">Filename Pattern</label>
-                        <span class="tooltip-icon">ⓘ
-                            <span class="tooltip-text">Custom pattern for saved files. Use {date}, {time}, and {text} as placeholders.</span>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="How does filename pattern work?" aria-describedby="tip-filename"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-filename" class="md-tooltip" role="tooltip">Use placeholders: {date}, {time}, {text}. Example: qr-{date}-{text}. Illegal filename characters are removed automatically.</div>
                         </span>
                     </div>
                     <input type="text" id="filenamePattern" value="qrcode-{text}" placeholder="e.g., qr-{date}-{text}">
@@ -725,10 +949,11 @@
             </div>
             <div class="tab-content" id="technicalTab">
                 <div class="input-group">
-                    <div class="tooltip-wrapper">
+                    <div class="label-row">
                         <label for="errorCorrection">Error Correction</label>
-                        <span class="tooltip-icon">ⓘ
-                            <span class="tooltip-text">Higher levels allow QR code to remain readable even when partially damaged or obscured, but increase QR code size.</span>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="What is error correction?" aria-describedby="tip-ecc"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-ecc" class="md-tooltip" role="tooltip">Allows recovery from damage/obstruction. Levels: L≈7%, M≈15%, Q≈25%, H≈30% of data can be restored. Higher levels increase density.</div>
                         </span>
                     </div>
                     <div class="select-wrapper">
@@ -741,7 +966,13 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="encoding">Character Encoding</label>
+                    <div class="label-row">
+                        <label for="encoding">Character Encoding</label>
+                        <span class="md-help">
+                            <button type="button" class="help-button" aria-label="Which encoding should I use?" aria-describedby="tip-encoding"><span class="material-icons">help_outline</span></button>
+                            <div id="tip-encoding" class="md-tooltip" role="tooltip">Determines how text is stored. UTF-8 supports most languages and emojis. Use others only for legacy scanners.</div>
+                        </span>
+                    </div>
                     <div class="select-wrapper">
                         <select id="encoding" onchange="generateQR()">
                             <option value="UTF-8" selected>UTF-8 (Universal)</option>
@@ -1094,7 +1325,7 @@
             return size >= 200 && size <= 2000;
         }
 
-        function toggleAdvanced(button) {
+    function toggleAdvanced(button) {
             const section = document.getElementById('advancedSection');
             const willShow = !section.classList.contains('visible');
 
@@ -1106,7 +1337,19 @@
             if (willShow) {
                 section.style.display = 'block';
                 // Force a reflow for any CSS transitions
-                section.offsetHeight;
+        section.offsetHeight;
+        // Initialize tabs underline on open in next frame
+        requestAnimationFrame(updateTabsUnderline);
+                // Also re-run after fonts load to account for metric changes
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(() => {
+                        if (section.classList.contains('visible')) updateTabsUnderline();
+                    });
+                }
+                // Initialize slider fills when the section becomes visible
+                if (typeof initRangeFills === 'function') {
+                    requestAnimationFrame(initRangeFills);
+                }
             } else {
                 section.style.display = 'none';
             }
@@ -1302,12 +1545,6 @@
                 tab.classList.remove('active');
                 if(tab.textContent.toLowerCase().includes(tabName)) {
                     tab.classList.add('active');
-                    // Calculate the exact position for the underline
-                    const rect = tab.getBoundingClientRect();
-                    const containerRect = tabsContainer.getBoundingClientRect();
-                    const position = rect.left - containerRect.left;
-                    tabsContainer.style.setProperty('--underline-position', `${position}px`);
-                    tabsContainer.style.setProperty('--underline-width', `${rect.width}px`);
                 }
             });
             
@@ -1317,7 +1554,27 @@
             
             document.getElementById(tabName + 'Tab').classList.add('active');
             tabsContainer.setAttribute('data-active', tabName);
+
+            // Update underline position/width after layout
+            requestAnimationFrame(updateTabsUnderline);
         }
+
+        // Keep underline aligned to the active tab
+        function updateTabsUnderline() {
+            const tabsContainer = document.querySelector('.advanced-tabs');
+            if (!tabsContainer || tabsContainer.offsetParent === null) return; // not visible
+            const activeTab = tabsContainer.querySelector('.tab-button.active') || tabsContainer.querySelector('.tab-button');
+            if (!activeTab) return;
+            const rect = activeTab.getBoundingClientRect();
+            const containerRect = tabsContainer.getBoundingClientRect();
+            const position = rect.left - containerRect.left;
+            tabsContainer.style.setProperty('--underline-position', `${position}px`);
+            tabsContainer.style.setProperty('--underline-width', `${rect.width}px`);
+            tabsContainer.setAttribute('data-underline-ready', 'true');
+        }
+
+        // Recalculate underline on window resize
+        window.addEventListener('resize', () => requestAnimationFrame(updateTabsUnderline));
 
         function updateColorPreview(type) {
             const color = document.getElementById('color' + type.charAt(0).toUpperCase() + type.slice(1)).value;
@@ -1336,6 +1593,27 @@
         updateRangeValue('cornerRadius');
         updateRangeValue('padding');
         updateRangeValue('outputQuality');
+
+        // Enhanced slider fill for WebKit using CSS var --fill
+        function setRangeFill(el) {
+            const min = parseFloat(el.min || '0');
+            const max = parseFloat(el.max || '100');
+            const val = parseFloat(el.value || '0');
+            const pct = ((val - min) / (max - min)) * 100;
+            el.style.setProperty('--fill', pct + '%');
+        }
+
+        function initRangeFills() {
+            const ranges = document.querySelectorAll('input[type="range"]');
+            ranges.forEach(r => {
+                setRangeFill(r);
+                r.addEventListener('input', () => setRangeFill(r));
+                r.addEventListener('change', () => setRangeFill(r));
+            });
+        }
+
+        // Initialize on load and after advanced section opens
+        window.addEventListener('load', initRangeFills);
     </script>
 </body>
 </html> 
