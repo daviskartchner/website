@@ -671,7 +671,7 @@
             </div>
         </div>
 
-        <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
+    <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="advancedSection" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
         
         <div class="advanced-section" id="advancedSection">
             <div class="advanced-tabs">
@@ -1095,16 +1095,25 @@
         }
 
         function toggleAdvanced(button) {
-            button.classList.toggle('open');
             const section = document.getElementById('advancedSection');
-            section.classList.toggle('visible');
-            
-            // Ensure proper animation timing
-            if (section.classList.contains('visible')) {
+            const willShow = !section.classList.contains('visible');
+
+            // Toggle classes
+            button.classList.toggle('open', willShow);
+            section.classList.toggle('visible', willShow);
+
+            // Ensure proper visibility regardless of previous inline styles
+            if (willShow) {
                 section.style.display = 'block';
-                // Force a reflow
+                // Force a reflow for any CSS transitions
                 section.offsetHeight;
+            } else {
+                section.style.display = 'none';
             }
+
+            // Accessibility state
+            button.setAttribute('aria-expanded', String(willShow));
+            section.setAttribute('aria-hidden', String(!willShow));
         }
 
         function validateAndGenerate() {
