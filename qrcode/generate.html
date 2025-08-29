@@ -170,21 +170,34 @@
             aspect-ratio: 1 / 1;
             border-radius: 8px;
             background: var(--version-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block; /* container for absolutely positioned qrcode */
             overflow: hidden;
             border: 1px dashed var(--border-color);
         }
         .qr-frame #qrcode {
+            display: grid;
+            place-items: center;
             padding: 0 !important;
             background: transparent !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         .qr-frame #qrcode > div {
-            /* This div is created by the QR code library.
-               It was previously inheriting flex properties which caused sizing issues.
-               The rule is kept to override any potential inherited styles. */
-            display: block !important;
+            display: block;
+        }
+        .qr-frame #qrcode canvas,
+        .qr-frame #qrcode svg {
+            display: block;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Padding is handled by the JS wrapper (qrContainer) to avoid double padding */
+            box-sizing: border-box;
         }
         .qr-placeholder {
             color: var(--text-secondary);
@@ -194,18 +207,32 @@
         }
         .qr-frame .qr-placeholder {
             position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            text-align: center;
             padding: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none; /* Remove dotted line */
         }
         .qr-frame #qrcode canvas,
         .qr-frame #qrcode svg {
-            width: 100% !important;
-            height: 100% !important;
+            /* Keep display and rendering hints without overriding sizing */
             display: block;
             image-rendering: pixelated;
+        }
+        /* Preview image fitted to frame */
+        .qr-frame img.qr-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            image-rendering: pixelated;
+            /* No extra padding here; padding is baked into the data URL */
+            box-sizing: border-box;
+            background: transparent;
         }
         :root[data-theme='light'] .header-save:disabled {
             background-color: rgba(0, 0, 0, 0.12);
@@ -434,7 +461,7 @@
         }
 
     /* Right-pane QR should not auto-center outside its panel */
-    .right-pane #qrcode { margin: 12px auto 4px; }
+    .right-pane #qrcode { margin: 0 auto; }
 
         .advanced-toggle {
             color: var(--text-secondary);
@@ -1517,7 +1544,7 @@
             generateQR();
         }
 
-        function generateQR(directMode = false) {
+    function generateQR(directMode = false) {
             let data, size, format;
             
             if (directMode) {
@@ -1584,6 +1611,11 @@
                 qrContainer.id = 'qrcode-container';
                 qrContainer.style.padding = padding + 'px';
                 qrContainer.style.backgroundColor = options.colorLight;
+                // Reset any previous scaling
+                qrContainer.style.transform = '';
+                qrContainer.style.transformOrigin = 'center';
+                qrContainer.style.maxWidth = '100%';
+                qrContainer.style.maxHeight = '100%';
                 qrcodeEl.appendChild(qrContainer);
 
                 // Generate QR code
@@ -1612,6 +1644,7 @@
                                 };
                                 saveBtn.disabled = false;
                             }
+                            if (!directMode) setPreviewFromCurrent();
                         }
                     }, 100);
                 } else {
@@ -1642,12 +1675,24 @@
                                 };
                                 saveBtn.disabled = false;
                             }
+                            if (!directMode) setPreviewFromCurrent();
                         }
                     }, 100);
                 }
             } catch (error) {
                 if (!directMode) showError('Error generating QR code: ' + error.message);
             }
+        }
+        // Update the preview by rendering the generated data URL as an image
+        function setPreviewFromCurrent() {
+            const qrcodeEl = document.getElementById('qrcode');
+            if (!qrcodeEl || !currentQR) return;
+            qrcodeEl.innerHTML = '';
+            const img = document.createElement('img');
+            img.className = 'qr-preview';
+            img.alt = 'QR code preview';
+            img.src = currentQR.data;
+            qrcodeEl.appendChild(img);
         }
 
         function saveQR() {
