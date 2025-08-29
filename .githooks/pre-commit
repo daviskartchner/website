@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR=$(git rev-parse --show-toplevel)
+cd "$ROOT_DIR"
+
+FILE_REL="qrcode/generate.html"
+SCRIPT_REL="scripts/bump-version.mjs"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "[pre-commit] Error: Node.js is required to bump the version. Install Node and try again." >&2
+  exit 1
+fi
+
+if [ ! -f "$SCRIPT_REL" ]; then
+  echo "[pre-commit] Error: $SCRIPT_REL not found." >&2
+  exit 1
+fi
+
+# Bump patch version and stage the change so it lands in the same commit
+node "$SCRIPT_REL" --type patch
+
+if git ls-files --error-unmatch "$FILE_REL" >/dev/null 2>&1; then
+  git add "$FILE_REL"
+else
+  # If file isn't tracked, don't fail the commit
+  echo "[pre-commit] Warning: $FILE_REL is not tracked; skipping stage." >&2
+fi
+
+exit 0

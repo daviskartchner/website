@@ -1544,19 +1544,17 @@
             updateToggleButton();
         }
 
-        // Update toggle button text
+        // Update toggle button text to show the target action (e.g., "Switch to Dark")
         function updateToggleButton() {
             if (!window.location.search) {
-                const themeEmoji = {
-                    'light': '☀️',
-                    'dark': '🌙'
-                };
-                const themeNames = {
-                    'light': 'Light',
-                    'dark': 'Dark'
-                };
+                const themeEmoji = { light: '☀️', dark: '🌙' };
+                const themeNames = { light: 'Light', dark: 'Dark' };
                 const toggleBtn = document.querySelector('.theme-toggle');
-                toggleBtn.textContent = `${themeEmoji[currentTheme]} ${themeNames[currentTheme]} Theme`;
+                if (!toggleBtn) return;
+                const target = currentTheme === 'light' ? 'dark' : 'light';
+                toggleBtn.textContent = `${themeEmoji[target]} Switch to ${themeNames[target]}`;
+                toggleBtn.setAttribute('aria-label', `Switch to ${themeNames[target]} theme`);
+                toggleBtn.setAttribute('title', `Switch to ${themeNames[target]} theme`);
             }
         }
 
