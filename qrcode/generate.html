@@ -514,18 +514,14 @@
         }
 
         .advanced-section {
-            display: none;
-            padding: 16px;
-            background-color: var(--version-bg);
-            border-radius: 8px;
-            margin-bottom: 24px;
-            border: none;
-            box-shadow: var(--surface-1);
-            transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .advanced-section.visible {
+            /* Simplified container: no card background or shadow */
             display: block;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            margin: 16px 0 24px;
+            border: none;
+            box-shadow: none;
         }
 
         .advanced-section .input-group {
@@ -944,6 +940,79 @@
             color: var(--text-color);
             letter-spacing: 0.015em;
         }
+
+        /* Accordion (mobile-first enhancement) */
+        .accordion { display: block; }
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--container-bg);
+            margin-bottom: 12px;
+            overflow: hidden;
+            /* Remove shadow to avoid double hairlines on iOS */
+            box-shadow: none;
+        }
+        .accordion .tab-content {
+            /* Keep block to allow measurement; collapse via max-height */
+            display: block;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background: var(--container-bg);
+            padding: 0 14px; /* vertical padding animates in when open */
+            transition: max-height 250ms ease, opacity 200ms ease, padding 200ms ease;
+        }
+        .accordion-item.open .tab-content {
+            opacity: 1;
+            padding: 12px 14px;
+        }
+    .accordion-item:first-child { margin-top: 4px; }
+    .accordion-item:last-child { margin-bottom: 16px; }
+        .accordion-header:hover { background: var(--hover-overlay); }
+        .accordion-header {
+            /* Normalize button appearance across browsers (esp. iOS Safari) */
+            -webkit-appearance: none;
+            appearance: none;
+            display: flex; /* show on all sizes */
+            width: 100%;
+            text-align: left;
+            background: var(--version-bg);
+            color: var(--text-color);
+            border: 0;
+            box-shadow: none;
+            outline: none;
+            cursor: pointer;
+            padding: 12px 14px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            align-items: center;
+            justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+            background-clip: padding-box;
+            transition: background-color 200ms ease;
+        }
+        .accordion-header .material-icons { transition: transform 0.2s ease; }
+        .accordion-item.open .accordion-header .material-icons { transform: rotate(180deg); }
+        /* When open, make header background match content so highlight reaches top edge */
+        .accordion-item.open .accordion-header { background: var(--container-bg); }
+
+    /* Always use accordion UI (hide tabs) */
+    .advanced-tabs { display: none !important; }
+
+        /* On mobile: hide tabs; show accordion headers; control section visibility via .open */
+    @media (max-width: 600px) {
+            /* On mobile: keep outline, remove internal separators completely */
+            .accordion-item { border: 1px solid var(--border-color); box-shadow: none; border-radius: 10px; background: var(--container-bg); }
+            /* Collapsed state: make the whole card match header to avoid inner seams */
+            .accordion-item:not(.open) { background: var(--version-bg); }
+            .accordion-header { background: var(--version-bg); padding: 12px 16px; }
+            .accordion .tab-content { border-top: 0 !important; background: var(--container-bg); padding-left: 16px; padding-right: 16px; }
+            .accordion-item.open .tab-content { border-top: 0 !important; }
+            /* Remove accidental inner lines from margins */
+            .accordion-item { margin-top: 8px; margin-bottom: 12px; }
+            .accordion { margin: 0; }
+        }
     </style>
 </head>
 <body>
@@ -1017,15 +1086,16 @@
                     </div>
                 </div>
 
-                <div class="advanced-toggle" onclick="toggleAdvanced(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="advancedSection" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleAdvanced(this); }">Advanced options</div>
-                
                 <div class="advanced-section" id="advancedSection">
             <div class="advanced-tabs">
                 <button class="tab-button active" onclick="showTab('style')">Style</button>
                 <button class="tab-button" onclick="showTab('output')">Output</button>
                 <button class="tab-button" onclick="showTab('technical')">Technical</button>
             </div>
-            <div class="tab-content active" id="styleTab">
+            <div class="accordion" id="advancedAccordion">
+            <section class="accordion-item" id="acc-style">
+                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Style</span><span class="material-icons">expand_more</span></button>
+                <div class="tab-content" id="styleTab">
                 <div class="input-group">
                     <div class="label-row">
                         <label for="colorDark">QR Code Color</label>
@@ -1080,8 +1150,11 @@
                     <input type="range" id="padding" min="0" max="50" value="15" onchange="generateQR()" oninput="updateRangeValue('padding')">
                     <span class="range-value" id="paddingValue">15</span>
                 </div>
-            </div>
-            <div class="tab-content" id="outputTab">
+                </div>
+            </section>
+            <section class="accordion-item" id="acc-output">
+                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Output</span><span class="material-icons">expand_more</span></button>
+                <div class="tab-content" id="outputTab">
                 <div class="input-group">
                     <div class="label-row">
                         <label for="outputQuality">Output Quality</label>
@@ -1103,8 +1176,11 @@
                     </div>
                     <input type="text" id="filenamePattern" value="qrcode-{text}" placeholder="e.g., qr-{date}-{text}">
                 </div>
-            </div>
-            <div class="tab-content" id="technicalTab">
+                </div>
+            </section>
+            <section class="accordion-item" id="acc-technical">
+                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Technical</span><span class="material-icons">expand_more</span></button>
+                <div class="tab-content" id="technicalTab">
                 <div class="input-group">
                     <div class="label-row">
                         <label for="errorCorrection">Error Correction</label>
@@ -1138,6 +1214,8 @@
                         </select>
                     </div>
                 </div>
+                </div>
+            </section>
             </div>
                 </div>
 
@@ -1453,7 +1531,7 @@
             updateToggleButton();
         }
 
-        // Initialize page
+    // Initialize page
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const data = urlParams.get('data');
@@ -1473,6 +1551,7 @@
                 document.getElementById('direct').style.display = 'none';
                 initializeTheme();
                 updateToggleButton();
+                // Tabs are hidden (accordion-only UI); no underline init needed
 
                 // Mobile-only: auto-show theme toggle for ~7 seconds
                 try {
@@ -1501,39 +1580,7 @@
             return size >= 200 && size <= 2000;
         }
 
-    function toggleAdvanced(button) {
-            const section = document.getElementById('advancedSection');
-            const willShow = !section.classList.contains('visible');
-
-            // Toggle classes
-            button.classList.toggle('open', willShow);
-            section.classList.toggle('visible', willShow);
-
-            // Ensure proper visibility regardless of previous inline styles
-            if (willShow) {
-                section.style.display = 'block';
-                // Force a reflow for any CSS transitions
-        section.offsetHeight;
-        // Initialize tabs underline on open in next frame
-        requestAnimationFrame(updateTabsUnderline);
-                // Also re-run after fonts load to account for metric changes
-                if (document.fonts && document.fonts.ready) {
-                    document.fonts.ready.then(() => {
-                        if (section.classList.contains('visible')) updateTabsUnderline();
-                    });
-                }
-                // Initialize slider fills when the section becomes visible
-                if (typeof initRangeFills === 'function') {
-                    requestAnimationFrame(initRangeFills);
-                }
-            } else {
-                section.style.display = 'none';
-            }
-
-            // Accessibility state
-            button.setAttribute('aria-expanded', String(willShow));
-            section.setAttribute('aria-hidden', String(!willShow));
-        }
+    // (advanced toggle removed; accordion always visible)
 
         function validateAndGenerate() {
             const input = document.getElementById('data').value;
@@ -1746,6 +1793,7 @@
             const tabs = document.querySelectorAll('.tab-button');
             const contents = document.querySelectorAll('.tab-content');
             const tabsContainer = document.querySelector('.advanced-tabs');
+            if (!tabsContainer) return; // tabs hidden in accordion-only UI
             
             tabs.forEach(tab => {
                 tab.classList.remove('active');
@@ -1785,6 +1833,86 @@
         function updateColorPreview(type) {
             const color = document.getElementById('color' + type.charAt(0).toUpperCase() + type.slice(1)).value;
             document.getElementById(type + 'Preview').style.backgroundColor = color;
+        }
+
+        // Accordion toggles for mobile advanced options
+        function toggleAccordionSection(button) {
+            const item = button.closest('.accordion-item');
+            if (!item) return;
+            const accordion = item.parentElement;
+            const content = item.querySelector('.tab-content');
+            const willOpen = !item.classList.contains('open');
+
+            preservePositionDuring(() => {
+                // Close any other open items first for single-open behavior
+                const openItems = accordion.querySelectorAll('.accordion-item.open');
+                openItems.forEach(openItem => {
+                    if (openItem !== item) collapseAccordionItem(openItem);
+                });
+
+                if (willOpen) {
+                    expandAccordionItem(item, content);
+                } else {
+                    collapseAccordionItem(item, content);
+                }
+            }, button);
+
+            // No need for tab underline sync; tabs are hidden
+        }
+
+        function preservePositionDuring(fn, anchorEl) {
+            if (!anchorEl) { fn(); return; }
+            const startTop = anchorEl.getBoundingClientRect().top;
+            fn();
+            requestAnimationFrame(() => {
+                const endTop = anchorEl.getBoundingClientRect().top;
+                const delta = endTop - startTop;
+                if (Math.abs(delta) > 1) {
+                    window.scrollBy(0, delta);
+                }
+            });
+        }
+
+        function expandAccordionItem(item, contentEl) {
+            const content = contentEl || item.querySelector('.tab-content');
+            if (!content) return;
+            item.classList.add('open');
+            const full = content.scrollHeight;
+            content.style.maxHeight = full + 'px';
+            content.style.opacity = '1';
+            const headerBtn = item.querySelector('.accordion-header');
+            if (headerBtn) headerBtn.setAttribute('aria-expanded', 'true');
+            // After transition ends, set to auto for responsive content changes
+            const onEnd = (e) => {
+                if (e.propertyName === 'max-height') {
+                    content.style.maxHeight = 'none';
+                    content.removeEventListener('transitionend', onEnd);
+                }
+            };
+            content.addEventListener('transitionend', onEnd);
+        }
+
+        function collapseAccordionItem(item, contentEl) {
+            const content = contentEl || item.querySelector('.tab-content');
+            if (!content) return;
+            // Set fixed height to enable transition from current height to 0
+            if (content.style.maxHeight === 'none') {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+            // Force reflow then collapse
+            content.getBoundingClientRect();
+            content.style.maxHeight = '0px';
+            content.style.opacity = '0';
+            const headerBtn = item.querySelector('.accordion-header');
+            if (headerBtn) headerBtn.setAttribute('aria-expanded', 'false');
+            // After transition ends, remove open and cleanup
+            const onEnd = (e) => {
+                if (e.propertyName === 'max-height') {
+                    item.classList.remove('open');
+                    content.removeEventListener('transitionend', onEnd);
+                }
+            };
+            content.addEventListener('transitionend', onEnd);
         }
 
         function updateRangeValue(id) {
