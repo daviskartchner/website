@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap">
     <script>
         // Early theme initialization to prevent flash
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('theme');
             let theme;
             if (savedTheme) {
@@ -24,7 +25,9 @@
             document.documentElement.className = theme + '-theme';
         })();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+        integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         /* Light theme variables */
         :root,
@@ -35,7 +38,7 @@
             --text-secondary: rgba(0, 0, 0, 0.6);
             --border-color: rgba(0, 0, 0, 0.12);
             --input-bg: #ffffff;
-            --shadow-color: rgba(0,0,0,0.1);
+            --shadow-color: rgba(0, 0, 0, 0.1);
             --button-bg: #1976d2;
             --button-hover: #1565c0;
             --save-button-bg: #2e7d32;
@@ -51,9 +54,9 @@
             --label-color: rgba(0, 0, 0, 0.6);
             --caret-color: rgba(0, 0, 0, 0.6);
             --invalid-color: #d32f2f;
-            --surface-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --surface-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
-            --surface-3: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+            --surface-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --surface-2: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+            --surface-3: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10);
             --hover-overlay: rgba(0, 0, 0, 0.04);
             --focus-overlay: rgba(0, 0, 0, 0.12);
         }
@@ -66,7 +69,7 @@
             --text-secondary: rgba(255, 255, 255, 0.6);
             --border-color: rgba(255, 255, 255, 0.12);
             --input-bg: #2d2d2d;
-            --shadow-color: rgba(0,0,0,0.3);
+            --shadow-color: rgba(0, 0, 0, 0.3);
             --button-bg: #90caf9;
             --button-hover: #42a5f5;
             --save-button-bg: #66bb6a;
@@ -82,9 +85,9 @@
             --label-color: rgba(255, 255, 255, 0.6);
             --caret-color: rgba(255, 255, 255, 0.6);
             --invalid-color: #ef5350;
-            --surface-1: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.3);
-            --surface-2: 0 3px 6px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.2);
-            --surface-3: 0 10px 20px rgba(0,0,0,0.25), 0 3px 6px rgba(0,0,0,0.2);
+            --surface-1: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+            --surface-2: 0 3px 6px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
+            --surface-3: 0 10px 20px rgba(0, 0, 0, 0.25), 0 3px 6px rgba(0, 0, 0, 0.2);
             --hover-overlay: rgba(255, 255, 255, 0.08);
             --focus-overlay: rgba(255, 255, 255, 0.12);
         }
@@ -98,8 +101,8 @@
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                      color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .container {
@@ -111,7 +114,7 @@
             box-shadow: var(--surface-1);
             box-sizing: border-box;
             transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Desktop layout */
@@ -120,10 +123,15 @@
             grid-template-columns: 1.1fr 0.9fr;
             gap: 24px;
         }
-        .left-pane { min-width: 0; }
+
+        .left-pane {
+            min-width: 0;
+        }
+
         .right-pane {
             position: relative;
         }
+
         .qr-panel {
             position: sticky;
             top: 16px;
@@ -133,6 +141,7 @@
             padding: 16px;
             border: 1px solid var(--border-color);
         }
+
         .qr-panel-header {
             display: flex;
             align-items: center;
@@ -144,6 +153,7 @@
             color: var(--text-secondary);
             margin-bottom: 8px;
         }
+
         .header-save {
             padding: 0 12px;
             height: 32px;
@@ -157,6 +167,7 @@
             color: var(--on-primary);
             box-shadow: var(--surface-1);
         }
+
         .header-save:disabled {
             /* Better contrast in dark mode while still looking disabled */
             background-color: rgba(255, 255, 255, 0.16);
@@ -164,16 +175,19 @@
             box-shadow: none;
             cursor: not-allowed;
         }
+
         .qr-frame {
             position: relative;
             width: 100%;
             aspect-ratio: 1 / 1;
             border-radius: 8px;
             background: var(--version-bg);
-            display: block; /* container for absolutely positioned qrcode */
+            display: block;
+            /* container for absolutely positioned qrcode */
             overflow: hidden;
             border: 1px dashed var(--border-color);
         }
+
         .qr-frame #qrcode {
             display: grid;
             place-items: center;
@@ -185,9 +199,11 @@
             width: 100%;
             height: 100%;
         }
-        .qr-frame #qrcode > div {
+
+        .qr-frame #qrcode>div {
             display: block;
         }
+
         .qr-frame #qrcode canvas,
         .qr-frame #qrcode svg {
             display: block;
@@ -199,12 +215,14 @@
             /* Padding is handled by the JS wrapper (qrContainer) to avoid double padding */
             box-sizing: border-box;
         }
+
         .qr-placeholder {
             color: var(--text-secondary);
             font-size: 0.9rem;
             text-align: center;
             padding: 24px 8px;
         }
+
         .qr-frame .qr-placeholder {
             position: absolute;
             top: 50%;
@@ -215,14 +233,17 @@
             padding: 16px;
             width: 100%;
             box-sizing: border-box;
-            outline: none; /* Remove dotted line */
+            outline: none;
+            /* Remove dotted line */
         }
+
         .qr-frame #qrcode canvas,
         .qr-frame #qrcode svg {
             /* Keep display and rendering hints without overriding sizing */
             display: block;
             image-rendering: pixelated;
         }
+
         /* Preview image fitted to frame */
         .qr-frame img.qr-preview {
             width: 100%;
@@ -234,21 +255,27 @@
             box-sizing: border-box;
             background: transparent;
         }
+
         :root[data-theme='light'] .header-save:disabled {
             background-color: rgba(0, 0, 0, 0.12);
             color: rgba(0, 0, 0, 0.6);
         }
+
         :root[data-theme='dark'] .header-save:disabled {
             background-color: rgba(255, 255, 255, 0.16);
             color: rgba(255, 255, 255, 0.8);
         }
+
         .qr-actions {
             display: flex;
             justify-content: center;
             margin-top: 12px;
         }
+
         @media (min-width: 1000px) {
-            .container { max-width: 1100px; }
+            .container {
+                max-width: 1100px;
+            }
         }
 
         h1 {
@@ -277,10 +304,10 @@
             line-height: 1.25rem;
         }
 
-        input[type="text"], 
-        input[type="number"], 
-        input[type="email"], 
-        input[type="tel"], 
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="tel"],
         select {
             width: 100%;
             max-width: 600px;
@@ -291,15 +318,15 @@
             font-family: 'Roboto', sans-serif;
             margin-bottom: 8px;
             transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             box-sizing: border-box;
             background-color: var(--input-bg);
             color: var(--text-color);
             outline: none;
         }
 
-        input[type="text"]:focus, 
-        input[type="number"]:focus, 
+        input[type="text"]:focus,
+        input[type="number"]:focus,
         input[type="email"]:focus,
         input[type="tel"]:focus,
         select:focus {
@@ -345,7 +372,7 @@
             cursor: pointer;
             font-family: 'Roboto', sans-serif;
             transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             padding-right: 48px;
         }
 
@@ -382,7 +409,7 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             min-width: 150px;
             background-color: var(--button-bg);
             color: white;
@@ -438,7 +465,8 @@
             opacity: 1;
         }
 
-        #qrcode, #directQrcode {
+        #qrcode,
+        #directQrcode {
             text-align: center;
             margin: 32px auto;
             padding: 24px;
@@ -452,6 +480,7 @@
             aspect-ratio: 1;
             width: fit-content;
         }
+
         /* When in the framed preview, remove extra margin/padding/bg to keep square */
         .qr-frame #qrcode {
             margin: 0;
@@ -460,8 +489,10 @@
             box-shadow: none;
         }
 
-    /* Right-pane QR should not auto-center outside its panel */
-    .right-pane #qrcode { margin: 0 auto; }
+        /* Right-pane QR should not auto-center outside its panel */
+        .right-pane #qrcode {
+            margin: 0 auto;
+        }
 
         .advanced-toggle {
             color: var(--text-secondary);
@@ -528,7 +559,7 @@
             margin: 0;
         }
 
-    .advanced-tabs {
+        .advanced-tabs {
             display: flex;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 24px;
@@ -620,7 +651,8 @@
             position: relative;
             display: inline-block;
         }
-        .color-button-wrapper > input[type="color"].hidden-color-input {
+
+        .color-button-wrapper>input[type="color"].hidden-color-input {
             position: absolute;
             inset: 0;
             width: 100%;
@@ -648,6 +680,7 @@
             background: transparent;
             border-radius: 3px;
         }
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
@@ -656,7 +689,8 @@
             background: var(--container-bg);
             border: 2px solid var(--primary);
             box-shadow: var(--surface-1);
-            margin-top: -6px; /* center thumb over 6px track */
+            margin-top: -6px;
+            /* center thumb over 6px track */
         }
 
         /* Firefox */
@@ -666,12 +700,14 @@
             border: none;
             border-radius: 3px;
         }
+
         input[type="range"]::-moz-range-progress {
             height: 6px;
             background: var(--primary);
             border: none;
             border-radius: 3px 0 0 3px;
         }
+
         input[type="range"]::-moz-range-thumb {
             width: 18px;
             height: 18px;
@@ -745,11 +781,21 @@
             background-color: var(--hover-overlay);
         }
 
+        @media (max-width: 1000px) and (min-width: 601px) {
+            .page-layout {
+                display: block;
+            }
+
+            .right-pane {
+                margin-top: 24px;
+            }
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 16px;
             }
-            
+
             .container {
                 padding: 16px;
             }
@@ -767,13 +813,17 @@
                 width: 100%;
             }
 
-            input[type="text"], 
-            input[type="number"], 
-            input[type="email"], 
-            input[type="tel"], 
+            input[type="text"],
+            input[type="number"],
+            input[type="email"],
+            input[type="tel"],
             select {
                 font-size: 16px;
                 padding: 12px;
+            }
+
+            select {
+                padding-right: 80px;
             }
 
             button {
@@ -788,11 +838,18 @@
             h1 {
                 font-size: 1.5rem;
                 line-height: 2rem;
+                margin-top: 16px;
+                margin-bottom: 24px;
             }
 
             /* Mobile: stack panes so preview appears below */
-            .right-pane { margin-top: 16px; }
-            #qrcode { margin-top: 16px; }
+            .right-pane {
+                margin-top: 16px;
+            }
+
+            #qrcode {
+                margin-top: 16px;
+            }
         }
 
         .color-button {
@@ -864,7 +921,7 @@
             letter-spacing: normal;
             font-weight: 400;
             transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                        color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .help-button:hover,
@@ -880,8 +937,10 @@
         }
 
         .md-tooltip {
-            position: fixed; /* escape accordion overflow clipping */
-            left: -10000px; /* offscreen until positioned */
+            position: fixed;
+            /* escape accordion overflow clipping */
+            left: -10000px;
+            /* offscreen until positioned */
             top: -10000px;
             min-width: 260px;
             max-width: 420px;
@@ -897,7 +956,8 @@
             transform: translateY(4px);
             visibility: hidden;
             transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
-            z-index: 1000; /* above panels */
+            z-index: 1000;
+            /* above panels */
             pointer-events: none;
         }
 
@@ -918,30 +978,38 @@
             height: 0;
             border-style: solid;
         }
+
         /* Right side (tooltip to the right of trigger, arrow on left) */
-        .md-tooltip.tooltip-right::after { /* border */
+        .md-tooltip.tooltip-right::after {
+            /* border */
             left: -8px;
             top: 50%;
             margin-top: -8px;
             border-width: 8px 8px 8px 0;
             border-color: transparent var(--border-color) transparent transparent;
         }
-        .md-tooltip.tooltip-right::before { /* fill */
+
+        .md-tooltip.tooltip-right::before {
+            /* fill */
             left: -7px;
             top: 50%;
             margin-top: -7px;
             border-width: 7px 7px 7px 0;
             border-color: transparent var(--container-bg) transparent transparent;
         }
+
         /* Left side (tooltip to the left of trigger, arrow on right) */
-        .md-tooltip.tooltip-left::after { /* border */
+        .md-tooltip.tooltip-left::after {
+            /* border */
             right: -8px;
             top: 50%;
             margin-top: -8px;
             border-width: 8px 0 8px 8px;
             border-color: transparent transparent transparent var(--border-color);
         }
-        .md-tooltip.tooltip-left::before { /* fill */
+
+        .md-tooltip.tooltip-left::before {
+            /* fill */
             right: -7px;
             top: 50%;
             margin-top: -7px;
@@ -950,20 +1018,23 @@
         }
 
         /* Clear separation between setting groups */
-    .tab-content .input-group + .input-group {
-            margin-top: 24px; /* default for non-advanced areas */
+        .tab-content .input-group+.input-group {
+            margin-top: 24px;
+            /* default for non-advanced areas */
         }
+
         .advanced-section .tab-content .input-group {
             padding-bottom: 8px;
         }
-        .advanced-section .tab-content .input-group + .input-group {
+
+        .advanced-section .tab-content .input-group+.input-group {
             margin-top: 20px;
             padding-top: 16px;
             border-top: 1px solid var(--border-color);
         }
 
         /* Stronger, clearer setting headers inside Advanced */
-        .advanced-section .label-row > label {
+        .advanced-section .label-row>label {
             font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-color);
@@ -971,7 +1042,10 @@
         }
 
         /* Accordion (mobile-first enhancement) */
-        .accordion { display: block; }
+        .accordion {
+            display: block;
+        }
+
         .accordion-item {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -981,6 +1055,7 @@
             /* Remove shadow to avoid double hairlines on iOS */
             box-shadow: none;
         }
+
         .accordion .tab-content {
             /* Keep block to allow measurement; collapse via max-height */
             display: block;
@@ -988,21 +1063,34 @@
             overflow: hidden;
             opacity: 0;
             background: var(--container-bg);
-            padding: 0 14px; /* vertical padding animates in when open */
+            padding: 0 14px;
+            /* vertical padding animates in when open */
             transition: max-height 250ms ease, opacity 200ms ease, padding 200ms ease;
         }
+
         .accordion-item.open .tab-content {
             opacity: 1;
             padding: 12px 14px;
         }
-    .accordion-item:first-child { margin-top: 4px; }
-    .accordion-item:last-child { margin-bottom: 16px; }
-        .accordion-header:hover { background: var(--hover-overlay); }
+
+        .accordion-item:first-child {
+            margin-top: 4px;
+        }
+
+        .accordion-item:last-child {
+            margin-bottom: 16px;
+        }
+
+        .accordion-header:hover {
+            background: var(--hover-overlay);
+        }
+
         .accordion-header {
             /* Normalize button appearance across browsers (esp. iOS Safari) */
             -webkit-appearance: none;
             appearance: none;
-            display: flex; /* show on all sizes */
+            display: flex;
+            /* show on all sizes */
             width: 100%;
             text-align: left;
             background: var(--version-bg);
@@ -1021,32 +1109,93 @@
             background-clip: padding-box;
             transition: background-color 200ms ease;
         }
-        .accordion-header .material-icons { transition: transform 0.2s ease; }
-        .accordion-item.open .accordion-header .material-icons { transform: rotate(180deg); }
-        /* When open, make header background match content so highlight reaches top edge */
-        .accordion-item.open .accordion-header { background: var(--container-bg); }
 
-    /* Always use accordion UI (hide tabs) */
-    .advanced-tabs { display: none !important; }
+        .accordion-header .material-icons {
+            transition: transform 0.2s ease;
+        }
+
+        .accordion-item.open .accordion-header .material-icons {
+            transform: rotate(180deg);
+        }
+
+        /* When open, make header background match content so highlight reaches top edge */
+        .accordion-item.open .accordion-header {
+            background: var(--container-bg);
+        }
+
+        /* Always use accordion UI (hide tabs) */
+        .advanced-tabs {
+            display: none !important;
+        }
 
         /* On mobile: hide tabs; show accordion headers; control section visibility via .open */
-    @media (max-width: 600px) {
+        @media (max-width: 600px) {
+
             /* On mobile: keep outline, remove internal separators completely */
-            .accordion-item { border: 1px solid var(--border-color); box-shadow: none; border-radius: 10px; background: var(--container-bg); }
+            .accordion-item {
+                border: 1px solid var(--border-color);
+                box-shadow: none;
+                border-radius: 10px;
+                background: var(--container-bg);
+                overflow: hidden;
+            }
+
             /* Collapsed state: make the whole card match header to avoid inner seams */
-            .accordion-item:not(.open) { background: var(--version-bg); }
-            .accordion-header { background: var(--version-bg); padding: 12px 16px; }
-            .accordion .tab-content { border-top: 0 !important; background: var(--container-bg); padding-left: 16px; padding-right: 16px; }
-            .accordion-item.open .tab-content { border-top: 0 !important; }
+            .accordion-item:not(.open) {
+                background: var(--version-bg);
+                transition: background-color 0.2s ease;
+            }
+
+            .accordion-item:not(.open):hover {
+                background: linear-gradient(var(--hover-overlay), var(--hover-overlay)), var(--version-bg);
+            }
+
+            .accordion-header {
+                background: transparent;
+                padding: 12px 16px;
+            }
+
+            /* Default hover for open items */
+            .accordion-header:hover {
+                background: var(--hover-overlay);
+            }
+
+            /* Disable header hover for collapsed items so item hover shows through */
+            .accordion-item:not(.open) .accordion-header:hover {
+                background: transparent;
+            }
+
+            .accordion .tab-content {
+                border-top: 0 !important;
+                background: var(--container-bg);
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .accordion-item.open .tab-content {
+                border-top: 0 !important;
+            }
+
             /* Remove accidental inner lines from margins */
-            .accordion-item { margin-top: 8px; margin-bottom: 12px; }
-            .accordion { margin: 0; }
+            .accordion-item {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            .accordion-item.open {
+                margin-bottom: 24px;
+            }
+
+            .accordion {
+                margin: 0;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="version-container">
-    <div class="version" onclick="showThemeToggle(event)" ontouchstart="showThemeToggle(event)">v1.9.2</div>
+        <div class="version" onclick="toggleTheme()">v1.9.3</div>
         <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Theme</button>
     </div>
     <div id="gui" class="container">
@@ -1078,10 +1227,8 @@
 
                 <div class="input-group">
                     <label for="data">Text</label>
-                    <input type="text" id="data" placeholder="Enter text" 
-                        onkeyup="validateAndGenerate()" 
-                        onpaste="setTimeout(validateAndGenerate, 0)"
-                        maxlength="700">
+                    <input type="text" id="data" placeholder="Enter text" onkeyup="validateAndGenerate()"
+                        onpaste="setTimeout(validateAndGenerate, 0)" maxlength="700">
                 </div>
 
                 <div class="controls">
@@ -1116,143 +1263,196 @@
                 </div>
 
                 <div class="advanced-section" id="advancedSection">
-            <div class="advanced-tabs">
-                <button class="tab-button active" onclick="showTab('style')">Style</button>
-                <button class="tab-button" onclick="showTab('output')">Output</button>
-                <button class="tab-button" onclick="showTab('technical')">Technical</button>
-            </div>
-            <div class="accordion" id="advancedAccordion">
-            <section class="accordion-item" id="acc-style">
-                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Style</span><span class="material-icons">expand_more</span></button>
-                <div class="tab-content" id="styleTab">
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="colorDark">QR Code Color</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What is QR code color?" aria-describedby="tip-colorDark"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-colorDark" class="md-tooltip" role="tooltip">Sets the color of the QR modules (the small squares). Choose a dark, high-contrast color for reliable scanning.</div>
-                        </span>
+                    <div class="advanced-tabs">
+                        <button class="tab-button active" onclick="showTab('style')">Style</button>
+                        <button class="tab-button" onclick="showTab('output')">Output</button>
+                        <button class="tab-button" onclick="showTab('technical')">Technical</button>
                     </div>
-                    <div class="color-input-wrapper">
-                        <div class="color-preview" id="darkPreview"></div>
-                        <span class="color-button-wrapper">
-                            <button class="color-button" type="button">Choose Color</button>
-                            <input type="color" id="colorDark" class="hidden-color-input" value="#000000" onchange="updateColorPreview('dark'); generateQR()">
-                        </span>
+                    <div class="accordion" id="advancedAccordion">
+                        <section class="accordion-item" id="acc-style">
+                            <button class="accordion-header" type="button" aria-expanded="false"
+                                onclick="toggleAccordionSection(this)"><span>Style</span><span
+                                    class="material-icons">expand_more</span></button>
+                            <div class="tab-content" id="styleTab">
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="colorDark">QR Code Color</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="What is QR code color?"
+                                                aria-describedby="tip-colorDark"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-colorDark" class="md-tooltip" role="tooltip">Sets the color of
+                                                the QR modules (the small squares). Choose a dark, high-contrast color
+                                                for reliable scanning.</div>
+                                        </span>
+                                    </div>
+                                    <div class="color-input-wrapper">
+                                        <div class="color-preview" id="darkPreview"></div>
+                                        <span class="color-button-wrapper">
+                                            <button class="color-button" type="button">Choose Color</button>
+                                            <input type="color" id="colorDark" class="hidden-color-input"
+                                                value="#000000" onchange="updateColorPreview('dark'); generateQR()">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="colorLight">Background Color</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="What is background color?"
+                                                aria-describedby="tip-colorLight"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-colorLight" class="md-tooltip" role="tooltip">The background
+                                                (quiet zone) behind the QR. Keep it light for best contrast. This also
+                                                fills the padding area.</div>
+                                        </span>
+                                    </div>
+                                    <div class="color-input-wrapper">
+                                        <div class="color-preview" id="lightPreview"></div>
+                                        <span class="color-button-wrapper">
+                                            <button class="color-button" type="button">Choose Color</button>
+                                            <input type="color" id="colorLight" class="hidden-color-input"
+                                                value="#ffffff" onchange="updateColorPreview('light'); generateQR()">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="cornerRadius">Corner Radius</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="What is corner radius?"
+                                                aria-describedby="tip-cornerRadius"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-cornerRadius" class="md-tooltip" role="tooltip">Rounds the
+                                                corners of the QR modules for a softer look. Extreme rounding can reduce
+                                                scanning reliability.</div>
+                                        </span>
+                                    </div>
+                                    <input type="range" id="cornerRadius" min="0" max="50" value="0"
+                                        onchange="generateQR()" oninput="updateRangeValue('cornerRadius')">
+                                    <span class="range-value" id="cornerRadiusValue">0</span>
+                                </div>
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="padding">Padding</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button" aria-label="What is padding?"
+                                                aria-describedby="tip-padding"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-padding" class="md-tooltip" role="tooltip">Adds space around
+                                                the QR in the exported image (pixels). A larger quiet zone can improve
+                                                scan reliability.</div>
+                                        </span>
+                                    </div>
+                                    <input type="range" id="padding" min="0" max="50" value="15" onchange="generateQR()"
+                                        oninput="updateRangeValue('padding')">
+                                    <span class="range-value" id="paddingValue">15</span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="accordion-item" id="acc-output">
+                            <button class="accordion-header" type="button" aria-expanded="false"
+                                onclick="toggleAccordionSection(this)"><span>Output</span><span
+                                    class="material-icons">expand_more</span></button>
+                            <div class="tab-content" id="outputTab">
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="outputQuality">Output Quality</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="What does output quality affect?"
+                                                aria-describedby="tip-outputQuality"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-outputQuality" class="md-tooltip" role="tooltip">Controls
+                                                compression for PNG/JPG downloads. Higher values = crisper image and
+                                                larger file. SVG exports are unaffected.</div>
+                                        </span>
+                                    </div>
+                                    <input type="range" id="outputQuality" min="1" max="100" value="90"
+                                        onchange="generateQR()" oninput="updateRangeValue('outputQuality')">
+                                    <span class="range-value" id="outputQualityValue">90</span>
+                                </div>
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="filenamePattern">Filename Pattern</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="How does filename pattern work?"
+                                                aria-describedby="tip-filename"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-filename" class="md-tooltip" role="tooltip">Use placeholders:
+                                                {date}, {time}, {text}. Example: qr-{date}-{text}. Illegal filename
+                                                characters are removed automatically.</div>
+                                        </span>
+                                    </div>
+                                    <input type="text" id="filenamePattern" value="qrcode-{text}"
+                                        placeholder="e.g., qr-{date}-{text}">
+                                </div>
+                            </div>
+                        </section>
+                        <section class="accordion-item" id="acc-technical">
+                            <button class="accordion-header" type="button" aria-expanded="false"
+                                onclick="toggleAccordionSection(this)"><span>Technical</span><span
+                                    class="material-icons">expand_more</span></button>
+                            <div class="tab-content" id="technicalTab">
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="errorCorrection">Error Correction</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="What is error correction?" aria-describedby="tip-ecc"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-ecc" class="md-tooltip" role="tooltip">Allows recovery from
+                                                damage/obstruction. Levels: L≈7%, M≈15%, Q≈25%, H≈30% of data can be
+                                                restored. Higher levels increase density.</div>
+                                        </span>
+                                    </div>
+                                    <div class="select-wrapper">
+                                        <select id="errorCorrection" onchange="generateQR()">
+                                            <option value="L">Low (7%)</option>
+                                            <option value="M">Medium (15%)</option>
+                                            <option value="Q">Quartile (25%)</option>
+                                            <option value="H">High (30%)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="label-row">
+                                        <label for="encoding">Character Encoding</label>
+                                        <span class="md-help">
+                                            <button type="button" class="help-button"
+                                                aria-label="Which encoding should I use?"
+                                                aria-describedby="tip-encoding"><span
+                                                    class="material-icons">help_outline</span></button>
+                                            <div id="tip-encoding" class="md-tooltip" role="tooltip">Determines how text
+                                                is stored. UTF-8 supports most languages and emojis. Use others only for
+                                                legacy scanners.</div>
+                                        </span>
+                                    </div>
+                                    <div class="select-wrapper">
+                                        <select id="encoding" onchange="generateQR()">
+                                            <option value="UTF-8" selected>UTF-8 (Universal)</option>
+                                            <option value="ISO-8859-1">ISO-8859-1 (Latin-1)</option>
+                                            <option value="Shift_JIS">Shift_JIS (Japanese)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                </div>
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="colorLight">Background Color</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What is background color?" aria-describedby="tip-colorLight"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-colorLight" class="md-tooltip" role="tooltip">The background (quiet zone) behind the QR. Keep it light for best contrast. This also fills the padding area.</div>
-                        </span>
-                    </div>
-                    <div class="color-input-wrapper">
-                        <div class="color-preview" id="lightPreview"></div>
-                        <span class="color-button-wrapper">
-                            <button class="color-button" type="button">Choose Color</button>
-                            <input type="color" id="colorLight" class="hidden-color-input" value="#ffffff" onchange="updateColorPreview('light'); generateQR()">
-                        </span>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="cornerRadius">Corner Radius</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What is corner radius?" aria-describedby="tip-cornerRadius"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-cornerRadius" class="md-tooltip" role="tooltip">Rounds the corners of the QR modules for a softer look. Extreme rounding can reduce scanning reliability.</div>
-                        </span>
-                    </div>
-                    <input type="range" id="cornerRadius" min="0" max="50" value="0" onchange="generateQR()" oninput="updateRangeValue('cornerRadius')">
-                    <span class="range-value" id="cornerRadiusValue">0</span>
-                </div>
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="padding">Padding</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What is padding?" aria-describedby="tip-padding"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-padding" class="md-tooltip" role="tooltip">Adds space around the QR in the exported image (pixels). A larger quiet zone can improve scan reliability.</div>
-                        </span>
-                    </div>
-                    <input type="range" id="padding" min="0" max="50" value="15" onchange="generateQR()" oninput="updateRangeValue('padding')">
-                    <span class="range-value" id="paddingValue">15</span>
-                </div>
-                </div>
-            </section>
-            <section class="accordion-item" id="acc-output">
-                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Output</span><span class="material-icons">expand_more</span></button>
-                <div class="tab-content" id="outputTab">
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="outputQuality">Output Quality</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What does output quality affect?" aria-describedby="tip-outputQuality"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-outputQuality" class="md-tooltip" role="tooltip">Controls compression for PNG/JPG downloads. Higher values = crisper image and larger file. SVG exports are unaffected.</div>
-                        </span>
-                    </div>
-                    <input type="range" id="outputQuality" min="1" max="100" value="90" onchange="generateQR()" oninput="updateRangeValue('outputQuality')">
-                    <span class="range-value" id="outputQualityValue">90</span>
-                </div>
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="filenamePattern">Filename Pattern</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="How does filename pattern work?" aria-describedby="tip-filename"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-filename" class="md-tooltip" role="tooltip">Use placeholders: {date}, {time}, {text}. Example: qr-{date}-{text}. Illegal filename characters are removed automatically.</div>
-                        </span>
-                    </div>
-                    <input type="text" id="filenamePattern" value="qrcode-{text}" placeholder="e.g., qr-{date}-{text}">
-                </div>
-                </div>
-            </section>
-            <section class="accordion-item" id="acc-technical">
-                <button class="accordion-header" type="button" aria-expanded="false" onclick="toggleAccordionSection(this)"><span>Technical</span><span class="material-icons">expand_more</span></button>
-                <div class="tab-content" id="technicalTab">
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="errorCorrection">Error Correction</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="What is error correction?" aria-describedby="tip-ecc"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-ecc" class="md-tooltip" role="tooltip">Allows recovery from damage/obstruction. Levels: L≈7%, M≈15%, Q≈25%, H≈30% of data can be restored. Higher levels increase density.</div>
-                        </span>
-                    </div>
-                    <div class="select-wrapper">
-                        <select id="errorCorrection" onchange="generateQR()">
-                            <option value="L">Low (7%)</option>
-                            <option value="M">Medium (15%)</option>
-                            <option value="Q">Quartile (25%)</option>
-                            <option value="H">High (30%)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="encoding">Character Encoding</label>
-                        <span class="md-help">
-                            <button type="button" class="help-button" aria-label="Which encoding should I use?" aria-describedby="tip-encoding"><span class="material-icons">help_outline</span></button>
-                            <div id="tip-encoding" class="md-tooltip" role="tooltip">Determines how text is stored. UTF-8 supports most languages and emojis. Use others only for legacy scanners.</div>
-                        </span>
-                    </div>
-                    <div class="select-wrapper">
-                        <select id="encoding" onchange="generateQR()">
-                            <option value="UTF-8" selected>UTF-8 (Universal)</option>
-                            <option value="ISO-8859-1">ISO-8859-1 (Latin-1)</option>
-                            <option value="Shift_JIS">Shift_JIS (Japanese)</option>
-                        </select>
-                    </div>
-                </div>
-                </div>
-            </section>
-            </div>
                 </div>
 
             </div>
 
             <aside class="right-pane">
                 <div class="qr-panel" data-has-qr="false">
-                    <div class="qr-panel-header"><span>Preview</span><button id="saveBtn" class="header-save" onclick="saveQR()" disabled><span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">download</span>Save</button></div>
+                    <div class="qr-panel-header"><span>Preview</span><button id="saveBtn" class="header-save"
+                            onclick="saveQR()" disabled><span class="material-icons"
+                                style="font-size:18px;vertical-align:middle;margin-right:6px;">download</span>Save</button>
+                    </div>
                     <div class="qr-frame">
                         <div class="qr-placeholder">Your QR code will appear here once generated.</div>
                         <div id="qrcode"></div>
@@ -1270,8 +1470,8 @@
         let currentQR = null;
         let currentTheme = null;
         let currentTemplate = 'custom';
-    // Sequence to ensure only latest render applies
-    let renderSeq = 0;
+        // Sequence to ensure only latest render applies
+        let renderSeq = 0;
 
         // Validation functions
         function validateEmail(email) {
@@ -1287,7 +1487,7 @@
             if (!value) return value;
             const phoneNumber = value.replace(/\D/g, '');
             const phoneNumberLength = phoneNumber.length;
-            
+
             // Always show the opening parenthesis
             if (phoneNumberLength <= 3) {
                 return `(${phoneNumber}`;
@@ -1316,17 +1516,17 @@
             template.fields.forEach(field => {
                 const input = document.getElementById(field.id);
                 const value = input.value;
-                
+
                 // Remove any previous error styling
                 input.style.borderColor = '';
-                
+
                 if (field.id === 'email' && value) {
                     if (!validateEmail(value)) {
                         input.style.borderColor = 'var(--error-color)';
                         isValid = false;
                     }
                 }
-                
+
                 if (field.id === 'phone' && value) {
                     const phoneDigits = value.replace(/\D/g, '');
                     if (!validatePhone(phoneDigits)) {
@@ -1334,7 +1534,7 @@
                         isValid = false;
                     }
                 }
-                
+
                 data[field.id] = value;
             });
 
@@ -1360,11 +1560,13 @@
                 fields: [
                     { id: 'ssid', label: 'Network Name', placeholder: 'WiFi Network Name' },
                     { id: 'password', label: 'Password', placeholder: 'WiFi Password' },
-                    { id: 'encryption', label: 'Encryption', type: 'select', options: [
-                        { value: 'WPA', label: 'WPA/WPA2' },
-                        { value: 'WEP', label: 'WEP' },
-                        { value: 'nopass', label: 'None' }
-                    ]}
+                    {
+                        id: 'encryption', label: 'Encryption', type: 'select', options: [
+                            { value: 'WPA', label: 'WPA/WPA2' },
+                            { value: 'WEP', label: 'WEP' },
+                            { value: 'nopass', label: 'None' }
+                        ]
+                    }
                 ],
                 format: (data) => `WIFI:T:${data.encryption};S:${data.ssid};P:${data.password};;`
             },
@@ -1426,13 +1628,13 @@
             const dataInput = document.getElementById('data');
             const qrcodeEl = document.getElementById('qrcode');
             const saveBtn = document.getElementById('saveBtn');
-            
+
             // Clear previous QR code and data
             qrcodeEl.innerHTML = '';
             qrcodeEl.style.display = 'none';
             dataInput.value = '';
             saveBtn.disabled = true;
-            
+
             currentTemplate = templateSelect.value;
             const template = templates[currentTemplate];
 
@@ -1456,7 +1658,7 @@
             template.fields.forEach(field => {
                 const fieldDiv = document.createElement('div');
                 fieldDiv.className = 'template-field';
-                
+
                 const label = document.createElement('label');
                 label.htmlFor = field.id;
                 label.textContent = field.label;
@@ -1477,11 +1679,11 @@
                     input = document.createElement('input');
                     input.type = field.type || 'text';
                 }
-                
+
                 input.id = field.id;
                 input.placeholder = field.placeholder || '';
                 input.value = ''; // Ensure the field starts empty
-                
+
                 // Add specific validation and formatting for email and phone fields
                 if (field.id === 'email') {
                     input.type = 'email';
@@ -1496,7 +1698,7 @@
                 } else {
                     input.oninput = validateAndGenerateTemplate;
                 }
-                
+
                 fieldDiv.appendChild(input);
                 fieldsContainer.appendChild(fieldDiv);
             });
@@ -1526,7 +1728,7 @@
                         currentTheme = 'light';
                     }
                 }
-                
+
                 // Listen for system theme changes if no manual preference is set
                 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                     if (!localStorage.getItem('theme')) {
@@ -1566,11 +1768,11 @@
             updateToggleButton();
         }
 
-    // Initialize page
-        window.onload = function() {
+        // Initialize page
+        window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const data = urlParams.get('data');
-            
+
             if (data) {
                 // Direct QR code mode - minimal display
                 document.body.style.margin = '0';
@@ -1615,7 +1817,7 @@
             return size >= 200 && size <= 2000;
         }
 
-    // (advanced toggle removed; accordion always visible)
+        // (advanced toggle removed; accordion always visible)
 
         function validateAndGenerate() {
             const input = document.getElementById('data').value;
@@ -1626,10 +1828,10 @@
             generateQR();
         }
 
-    function generateQR(directMode = false) {
+        function generateQR(directMode = false) {
             let data, size, format;
             const thisSeq = ++renderSeq;
-            
+
             if (directMode) {
                 const urlParams = new URLSearchParams(window.location.search);
                 data = urlParams.get('data');
@@ -1640,7 +1842,7 @@
                 size = parseInt(document.getElementById('size').value);
                 format = document.getElementById('format').value;
             }
-            
+
             const qrcodeEl = directMode ? document.getElementById('directQrcode') : document.getElementById('qrcode');
             const saveBtn = document.getElementById('saveBtn');
 
@@ -1722,7 +1924,7 @@
                         ...options,
                         useSVG: true
                     });
-                    
+
                     setTimeout(() => {
                         // If a newer render kicked off, abort this one
                         if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
@@ -1751,7 +1953,7 @@
                     }, 100);
                 } else {
                     const qr = new QRCode(qrContainer, options);
-                    
+
                     setTimeout(() => {
                         // If a newer render kicked off, abort this one
                         if (thisSeq !== renderSeq) { work.innerHTML = ''; return; }
@@ -1811,12 +2013,12 @@
             const format = document.getElementById('format').value;
             const data = document.getElementById('data').value.trim();
             const pattern = document.getElementById('filenamePattern').value;
-            
+
             let filename = pattern
                 .replace('{text}', data.substring(0, 30))
                 .replace('{date}', new Date().toISOString().split('T')[0])
                 .replace('{time}', new Date().toTimeString().split(' ')[0].replace(/:/g, '-'));
-                
+
             filename = `${filename}.${currentQR.format}`;
 
             const link = document.createElement('a');
@@ -1832,16 +2034,16 @@
             if (event.type === 'touchstart') {
                 event.preventDefault();
             }
-            
+
             const themeToggle = document.querySelector('.theme-toggle');
             themeToggle.style.opacity = '1';
             themeToggle.style.visibility = 'visible';
-            
+
             // Clear any existing timeout
             if (window.themeToggleTimeout) {
                 clearTimeout(window.themeToggleTimeout);
             }
-            
+
             // Hide after 10 seconds
             window.themeToggleTimeout = setTimeout(() => {
                 themeToggle.style.opacity = '0';
@@ -1854,18 +2056,18 @@
             const contents = document.querySelectorAll('.tab-content');
             const tabsContainer = document.querySelector('.advanced-tabs');
             if (!tabsContainer) return; // tabs hidden in accordion-only UI
-            
+
             tabs.forEach(tab => {
                 tab.classList.remove('active');
-                if(tab.textContent.toLowerCase().includes(tabName)) {
+                if (tab.textContent.toLowerCase().includes(tabName)) {
                     tab.classList.add('active');
                 }
             });
-            
+
             contents.forEach(content => {
                 content.classList.remove('active');
             });
-            
+
             document.getElementById(tabName + 'Tab').classList.add('active');
             tabsContainer.setAttribute('data-active', tabName);
 
@@ -2095,4 +2297,5 @@
         }
     </script>
 </body>
+
 </html>
