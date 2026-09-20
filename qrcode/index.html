@@ -3,91 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator API Documentation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .api-docs {
-            background-color: #f5f5f5;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        code {
-            background-color: #e0e0e0;
-            padding: 2px 4px;
-            border-radius: 3px;
-            word-break: break-all;
-        }
-        .example-link {
-            display: inline-block;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #e8f4ff;
-            border-radius: 5px;
-            text-decoration: none;
-            color: #0066cc;
-        }
-        .example-link:hover {
-            background-color: #d0e8ff;
-        }
-    </style>
+    <meta http-equiv="refresh" content="0; url=./generate.html">
+    <title>QR Code Generator</title>
+    <script>
+        location.replace('generate.html' + window.location.search);
+    </script>
 </head>
 <body>
-    <h1>QR Code Generator API</h1>
-    
-    <div class="api-docs">
-        <h2>Usage</h2>
-        <p>To generate a QR code, use the following URL format:</p>
-        <code>https://daviskartchner.com/qrcode/generate.html?data=[your-data]&type=[type]</code>
-        
-        <h3>Parameters:</h3>
-        <ul>
-            <li><strong>data</strong> (required): The content to encode in the QR code</li>
-            <li><strong>type</strong> (optional): Output format
-                <ul>
-                    <li>svg (default) - Returns SVG format</li>
-                    <li>png - Returns PNG format</li>
-                    <li>url - Returns URL format</li>
-                </ul>
-            </li>
-        </ul>
-        
-        <h3>Live Examples:</h3>
-        <p>Click any example below to see it in action:</p>
-        <div>
-            <a href="generate.html?data=Hello%20World" class="example-link">
-                Generate SVG QR code for "Hello World"
-            </a>
-        </div>
-        <div>
-            <a href="generate.html?data=Hello%20World&type=png" class="example-link">
-                Generate PNG QR code for "Hello World"
-            </a>
-        </div>
-        <div>
-            <a href="generate.html?data=https://daviskartchner.com&type=url" class="example-link">
-                Generate URL QR code for this website
-            </a>
-        </div>
-
-        <h3>Example URLs:</h3>
-        <ul>
-            <li>SVG Format:<br>
-                <code>https://daviskartchner.com/qrcode/generate.html?data=Hello%20World</code>
-            </li>
-            <li>PNG Format:<br>
-                <code>https://daviskartchner.com/qrcode/generate.html?data=Hello%20World&type=png</code>
-            </li>
-            <li>URL Format:<br>
-                <code>https://daviskartchner.com/qrcode/generate.html?data=https://example.com&type=url</code>
-            </li>
-        </ul>
-    </div>
+    <h1>QR Code Generator</h1>
+    <p>Redirecting to the generator...</p>
+    <p>If you are not redirected automatically,
+        <a href="./generate.html">click here</a>.</p>
 </body>
-</html> 
+</html>
